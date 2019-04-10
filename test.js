@@ -112,7 +112,7 @@
             var type = step.match(/^(type|enter) (in )?(.+)/);
             if (type) {
                 var value = type[type.length-1];
-                message += '\nStep ' + (i+1) + ': type ' + ' in ' + currentElement + ': "' + value + '"';
+                message += '\nStep ' + (i+1) + ': type in ' + currentElement + ': "' + value + '"';
                 document.querySelector(currentElement).value = value;
                 document.querySelector(currentElement).innerHTML = value;
                 continue;

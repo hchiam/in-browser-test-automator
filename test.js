@@ -3,8 +3,10 @@
     var steps = [
 //         'go to https://www.google.com/', // TODO: maybe do goto elsewhere
         'click on .gLFyf', // TODO: get ID of element clicked on (see document.addEventListener below)
-        'type test value',
-        'check test value'
+        'type chrome extensions and where to find them',
+        "check that it's chrome extensions and where to find them",
+        "click on input[value='Google Search']",
+//         "click on button[aria-label='Google Search']",
     ];
 
     var baseStyle = 'all: initial; padding: 0.5rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; ';
@@ -105,8 +107,15 @@
             var click = step.match(/^(click|tap) (on )?(.+)/);
             if (click) {
                 currentElement = click[click.length-1];
-                message += '\nStep ' + (i+1) + ': click on ' + currentElement;
-                document.querySelector(currentElement).click();
+                message += '\nStep ' + (i+1);
+                if (document.querySelector(currentElement)) {
+                    message += ': click on ' + currentElement;
+                    document.querySelector(currentElement).click()
+                } else {
+                    message += ' FAILED: could not find ' + currentElement;
+                    overallPassed = false;
+                    break;
+                }
                 continue;
             }
             var type = step.match(/^(type|enter) (in )?(.+)/);
@@ -117,7 +126,7 @@
                 document.querySelector(currentElement).innerHTML = value;
                 continue;
             }
-            var check = step.match(/^(check|verify) (that (it('| i)s))?(.+)/);
+            var check = step.match(/^(check|verify)( that (it('| i)s))? (.+)/);
             if (check) {
                 var expectedValue = check[check.length-1];
                 var actualValue = document.querySelector(currentElement).value || document.querySelector(currentElement).innerHTML;
@@ -126,6 +135,7 @@
                 message += equals ? ('PASSED: "' + actualValue + '" is "' + expectedValue + '"') : ('FAILED: "' + actualValue + '" is NOT "' + expectedValue + '"');
                 if (!equals) {
                     overallPassed = false;
+                    break;
                 }
                 continue;
             }

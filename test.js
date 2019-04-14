@@ -93,7 +93,7 @@
         
         var colorOverlay = document.createElement("div");
         colorOverlay.id = 'in-browser-test-modal-input-overlay';
-        colorOverlay.style.cssText = 'position: absolute; top: 0; left: 0; z-index: -1; color: grey; background: white; ' + sharedStyle;
+        colorOverlay.style.cssText = 'position: absolute; top: 0; left: 0; z-index: -1; color: grey; background: rgba(100,200,255,0.5); ' + sharedStyle;
         div.appendChild(colorOverlay);
         
         container.appendChild(div);

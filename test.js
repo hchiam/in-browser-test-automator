@@ -62,16 +62,25 @@
     }
 
     function createInput(container) {
+        var sharedStyle = 'min-height: 20px; width: 70%; border: none; font-family: avenir, arial; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 3px; '
+        
         var div = document.createElement("div");
-        div.style.cssText = 'margin-top: 1rem; ';
+        div.style.cssText = 'margin-top: 1rem; ' + 'position: relative; ';
+        
         var input = document.createElement("input");
-        input.placeholder = 'Type here';
-        input.style.cssText = 'position: relative; display: block; ';
+        input.id = 'input';
+        input.style.cssText = 'position: relative; display: block; ' + 'color: rgba(255,255,255,0); background: rgba(255,255,255,0); caret-color: black; ' + sharedStyle;
         input.onkeyup = function() {
             // TODO: find element/elements, point to it/them, if >1 tell user to be more specific, if <1 tell user not found and give a suggestion
             processInput(input.value);
         };
-        div.appendChild(input)
+        div.appendChild(input);
+        
+        var colorOverlay = document.createElement("div");
+        colorOverlay.id = 'repeat';
+        colorOverlay.style.cssText = 'position: absolute; top: 0; left: 0; z-index: -1; color: grey; background: white; ' + sharedStyle;
+        div.appendChild(colorOverlay);
+        
         container.appendChild(div);
     }
 
@@ -164,6 +173,8 @@
     }
 
     function processInput(input) {
+
+        colorizeInput();
         
         // TODO: find element/elements, point to it/them, if >1 tell user to be more specific, if <1 tell user not found and give a suggestion
 
@@ -207,6 +218,24 @@
         } catch {
             return null;
         }
+    }
+
+    function colorizeInput() {
+        var newText = document.getElementById("input").value;
+        newText = highlightInputWord(newText, 'click', 'blue');
+        newText = highlightInputWord(newText, 'hit', 'blue');
+        newText = highlightInputWord(newText, 'type', 'red');
+        newText = highlightInputWord(newText, 'enter', 'red');
+        newText = highlightInputWord(newText, 'check', 'green');
+        newText = highlightInputWord(newText, 'verify', 'green');
+        document.getElementById('repeat').innerHTML = newText;
+    }
+
+    function highlightInputWord(sentence, word, color) {
+        return sentence.replace(
+            word, // new RegExp(word, 'g'),
+            '<span style="color:' + color + ';">' + word + '</span>'
+        );
     }
 
 })();

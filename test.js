@@ -67,7 +67,7 @@
         var input = document.createElement("input");
         input.placeholder = 'Type here';
         input.style.cssText = 'position: relative; display: block; ';
-        input.onkeypress = function() {
+        input.onkeyup = function() {
             // TODO: find element/elements, point to it/them, if >1 tell user to be more specific, if <1 tell user not found and give a suggestion
             processInput(input.value);
         };

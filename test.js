@@ -117,7 +117,6 @@
     }
 
     function runSteps() {
-        removeModal();
         currentElement = '';
         var overallPassed = true;
         var message = '';

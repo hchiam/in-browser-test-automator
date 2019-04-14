@@ -69,7 +69,7 @@
     function createPointerPreview(container) {
         var h1 = document.createElement("H1");
         h1.id = 'in-browser-test-modal-pointer-preview-h1';
-        h1.style.cssText = 'all: initial; font-family: avenir, arial, tahoma; font-weight: bold;';
+        h1.style.cssText = 'all: initial; font-family: avenir, arial, tahoma; font-weight: bold; ';
         container.appendChild(h1);
         var div = document.createElement("div");
         div.id = 'in-browser-test-modal-pointer-preview';
@@ -77,7 +77,7 @@
     }
 
     function createInput(container) {
-        var sharedStyle = 'min-height: 20px; width: 90%; border: none; font-family: avenir, arial; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 3px; '
+        var sharedStyle = 'min-height: 20px; width: 90%; border: none; font-family: avenir, arial; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 3px; margin-bottom: 1rem; '
         
         var div = document.createElement("div");
         div.style.cssText = 'margin-top: 1rem; ' + 'position: relative; ';

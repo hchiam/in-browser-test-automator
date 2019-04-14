@@ -303,17 +303,17 @@
     }
 
     function makeElementDraggable(element) {
-        var x1 = 0;
-        var y1 = 0;
-        var x2 = 0;
-        var y2 = 0;
+        var xChange = 0;
+        var yChange = 0;
+        var x = 0;
+        var y = 0;
         element.onmousedown = dragOnMouseDown;
 
         function dragOnMouseDown(event) {
             var event = event || window.event;
             event.preventDefault();
-            x2 = event.clientX;
-            y2 = event.clientY;
+            x = event.clientX;
+            y = event.clientY;
             document.onmouseup = stopDragging;
             document.onmousemove = dragElement;
         }
@@ -326,12 +326,12 @@
         function dragElement(event) {
             var event = event || window.event;
             event.preventDefault();
-            x1 = x2 - event.clientX;
-            y1 = y2 - event.clientY;
-            x2 = event.clientX;
-            y2 = event.clientY;
-            element.style.left = (element.offsetLeft - x1) + "px";
-            element.style.top = (element.offsetTop - y1) + "px";
+            xChange = event.clientX - x;
+            yChange = event.clientY - y;
+            x = event.clientX;
+            y = event.clientY;
+            element.style.left = (element.offsetLeft + xChange) + "px";
+            element.style.top = (element.offsetTop + yChange) + "px";
         }
     }
 

@@ -126,9 +126,9 @@
             if (click) {
                 currentElement = click[click.length-1];
                 message += '\nStep ' + (i+1);
-                if (document.querySelector(currentElement)) {
+                if (findElement(currentElement)) {
                     message += ': click on ' + currentElement;
-                    document.querySelector(currentElement).click()
+                    findElement(currentElement).click()
                 } else {
                     message += ' FAILED: could not find ' + currentElement;
                     overallPassed = false;
@@ -140,14 +140,14 @@
             if (type) {
                 var value = type[type.length-1];
                 message += '\nStep ' + (i+1) + ': type in ' + currentElement + ': "' + value + '"';
-                document.querySelector(currentElement).value = value;
-                document.querySelector(currentElement).innerHTML = value;
+                findElement(currentElement).value = value;
+                findElement(currentElement).innerHTML = value;
                 continue;
             }
             var check = step.match(/^(check|verify)( that (it('| i)s))? (.+)/);
             if (check) {
                 var expectedValue = check[check.length-1];
-                var actualValue = document.querySelector(currentElement).value || document.querySelector(currentElement).innerHTML;
+                var actualValue = findElement(currentElement).value || findElement(currentElement).innerHTML;
                 var equals = (actualValue === expectedValue);
                 message += '\nStep ' + (i+1) + ' ';
                 message += equals ? ('PASSED: "' + actualValue + '" is "' + expectedValue + '"') : ('FAILED: "' + actualValue + '" is NOT "' + expectedValue + '"');
@@ -175,32 +175,37 @@
         var click = input.match(/^(click|tap) (on )?(.+)/);
         if (click) {
             currentElement = click[click.length-1];
-            matches = document.querySelector(currentElement);
+            matches = findElement(currentElement);
             if (matches) {
                 // TODO: point to it/them
-            } else {
-                alert('Not found. Try this: ...'); // TODO: figure this out
             }
         }
         var type = input.match(/^(type|enter) (in )?(.+)/);
         if (type) {
             // TODO: figure out allowed fields before use this line: currentElement = click[click.length-1];
-            matches = document.querySelector(currentElement);
+            matches = findElement(currentElement);
             if (matches) {
                 // TODO: point to it/them
-            } else {
-                alert('Not found. Try this: ...'); // TODO: figure this out
             }
         }
         var check = input.match(/^(check|verify)( that (it('| i)s))? (.+)/);
         if (check) {
             // TODO: figure out allowed fields before use this line: currentElement = click[click.length-1];
-            matches = document.querySelector(currentElement);
+            matches = findElement(currentElement);
             if (matches) {
                 // TODO: point to it/them
-            } else {
-                alert('Not found. Try this: ...'); // TODO: figure this out
             }
+        }
+        if (!matches) {
+            console.log(currentElement + ' not found. Try this: ...'); // TODO: figure this out
+        }
+    }
+
+    function findElement(elementSelector) {
+        try {
+            return document.querySelector(currentElement);
+        } catch {
+            return null;
         }
     }
 

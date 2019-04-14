@@ -32,6 +32,8 @@
 
         createInput(div);
 
+        createPointerPreview(div);
+
         if (!Array.isArray(steps)) {
             steps = steps.split('\n');
         }
@@ -61,6 +63,16 @@
             button.style.cssText = offHoverStyle + 'position: absolute; right: 1rem; ';
         };
         container.appendChild(button);
+    }
+
+    function createPointerPreview(container) {
+        var h1 = document.createElement("H1");
+        h1.id = 'in-browser-test-modal-pointer-preview-h1';
+        h1.style.cssText = 'all: initial; font-family: avenir, arial, tahoma; font-weight: bold;';
+        container.appendChild(h1);
+        var div = document.createElement("div");
+        div.id = 'in-browser-test-modal-pointer-preview';
+        container.appendChild(div);
     }
 
     function createInput(container) {
@@ -261,7 +273,17 @@
             document.getElementById('in-browser-test-modal-input').value = sentence;
             document.getElementById('in-browser-test-modal-input-overlay').innerHTML = sentence;
             colorizeInput();
+            event.preventDefault(); // prevent click from triggering button action
         }
+    }, false);
+
+    document.addEventListener('mouseover', function(event) {
+        var e = event.target;
+        var tag = (e.tagName) ? e.tagName.toLowerCase() : '';
+        var id = (e.id) ? '#' + e.id : '';
+        var classes = (e.className) ? '.' + e.className.replace(' ','.') : '';
+        document.getElementById('in-browser-test-modal-pointer-preview-h1').innerHTML = 'Your pointer is hovering over: ';
+        document.getElementById('in-browser-test-modal-pointer-preview').innerHTML = tag + id + classes;
     }, false);
 
     function startsWithCommandVerb(sentence) {

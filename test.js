@@ -273,7 +273,11 @@
             document.getElementById('in-browser-test-modal-input').value = sentence;
             document.getElementById('in-browser-test-modal-input-overlay').innerHTML = sentence;
             colorizeInput();
-            return false; // prevent click from triggering button action (and prevent event propagation)
+            
+            // prevent click from triggering button action (and prevent event propagation):
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
         }
     }, false);
 

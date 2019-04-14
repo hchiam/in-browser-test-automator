@@ -11,7 +11,7 @@
 
     var currentElement = '';
 
-    var baseStyle = 'all: initial; padding: 0.5rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; ';
+    var baseStyle = 'all: initial; padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; ';
     var onHoverStyle = baseStyle + 'background: rgba(0,100,255,1); ';
     var offHoverStyle = baseStyle + 'background: rgba(0,100,255,0.5); ';
 
@@ -46,8 +46,9 @@
 
     function createCloseButton(container) {
         var button = document.createElement("button");
+        button.id = 'in-browser-test-modal-close';
         button.innerHTML = 'X';
-        button.style.cssText = 'all: initial; position: absolute; right: 1rem; background: rgba(0,100,255,0.5); padding: 0.5rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma;';
+        button.style.cssText = 'all: initial; position: absolute; right: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma;';
         button.title = 'Close';
         button.onclick = function() {
             removeModal();
@@ -62,7 +63,7 @@
     }
 
     function createInput(container) {
-        var sharedStyle = 'min-height: 20px; width: 70%; border: none; font-family: avenir, arial; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 3px; '
+        var sharedStyle = 'min-height: 20px; width: 90%; border: none; font-family: avenir, arial; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 3px; '
         
         var div = document.createElement("div");
         div.style.cssText = 'margin-top: 1rem; ' + 'position: relative; ';
@@ -70,6 +71,7 @@
         var input = document.createElement("input");
         input.id = 'in-browser-test-modal-input';
         input.style.cssText = 'position: relative; display: block; ' + 'color: rgba(255,255,255,0); background: rgba(255,255,255,0); caret-color: black; ' + sharedStyle;
+        input.placeholder = 'click/type/check something';
         input.onkeyup = function() {
             // TODO: find element/elements, point to it/them, if >1 tell user to be more specific, if <1 tell user not found and give a suggestion
             processInput(input.value);
@@ -94,7 +96,7 @@
     function createRunButton(container) {
         var button = document.createElement("button");
         button.innerHTML = '&#9658; Run steps';
-        button.style.cssText = 'all: initial; position: absolute; left: 1rem; background: rgba(0,100,255,0.5); padding: 0.5rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma;';
+        button.style.cssText = 'all: initial; position: absolute; left: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma;';
         button.onclick = function() {
             runSteps();
         };
@@ -175,13 +177,17 @@
     function processInput(input) {
 
         colorizeInput();
-        
+
         // TODO: find element/elements, point to it/them, if >1 tell user to be more specific, if <1 tell user not found and give a suggestion
 
         currentElement = '';
         var matches = '';
 
         // TODO: maybe do goto elsewhere
+
+        if (input == 'click ') {
+            document.getElementById('in-browser-test-modal-input-overlay').innerHTML += ' <span style="font-size:small;">(Click an element to auto-fill.)</span>';
+        }
 
         var click = input.match(/^(click|tap) (on )?(.+)/);
         if (click) {
@@ -222,12 +228,12 @@
 
     function colorizeInput() {
         var newText = document.getElementById('in-browser-test-modal-input').value;
-        newText = highlightInputWord(newText, 'click', 'blue');
-        newText = highlightInputWord(newText, 'hit', 'blue');
-        newText = highlightInputWord(newText, 'type', 'red');
-        newText = highlightInputWord(newText, 'enter', 'red');
-        newText = highlightInputWord(newText, 'check', 'green');
-        newText = highlightInputWord(newText, 'verify', 'green');
+        newText = highlightInputWord(newText, 'click ', 'blue');
+        newText = highlightInputWord(newText, 'hit ', 'blue');
+        newText = highlightInputWord(newText, 'type ', 'red');
+        newText = highlightInputWord(newText, 'enter ', 'red');
+        newText = highlightInputWord(newText, 'check ', 'green');
+        newText = highlightInputWord(newText, 'verify ', 'green');
         if (findElement(currentElement)) {
             newText = highlightInputWord(newText, currentElement, 'black');
         }
@@ -236,17 +242,36 @@
 
     function highlightInputWord(sentence, word, color) {
         return sentence.replace(
-            word, // new RegExp(word, 'g'),
+            word,
             '<span style="color:' + color + ';">' + word + '</span>'
         );
     }
 
-})();
+    document.addEventListener('click', function(event) {
+        var e = event.target;
+        var tag = (e.tagName) ? e.tagName.toLowerCase() : '';
+        var id = (e.id) ? '#' + e.id : '';
+        var classes = (e.className) ? '.' + e.className.replace(' ','.') : '';
+        var isInput = (id == '#in-browser-test-modal-input');
+        var input = document.getElementById('in-browser-test-modal-input');
+        var isClick = (input && input.value && input.value.match(/^(click |hit )/));
+        if (input && !isInput && (input.value === '' || isClick && startsWithCommandVerb(document.getElementById('in-browser-test-modal-input').value))) {
+            var sentence = 'click ' + tag + id + classes;
+            document.getElementById('in-browser-test-modal-input').value = sentence;
+            document.getElementById('in-browser-test-modal-input-overlay').innerHTML = sentence;
+            colorizeInput();
+        }
+    }, false);
 
-// document.addEventListener('click', function(event) {
-//     var e = event.target;
-//     var tag = (e.tagName) ? e.tagName : '';
-//     var id = (e.id) ? e.id : '';
-//     var classes = (e.className) ? '.' + e.className.replace(' ','.') : '';
-//     alert(tag + ' ' + id + ' ' + classes);
-// }, false);
+    function startsWithCommandVerb(sentence) {
+        var commandVerbs = ['click ', 'hit ', 'type ', 'enter ', 'check ', 'verify '];
+        for (var i=0; i<commandVerbs.length; i++) {
+            var startsWith = sentence.indexOf(commandVerbs[i]) === 0;
+            if (startsWith) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+})();

@@ -9,6 +9,8 @@
 //         "click on button[aria-label='Google Search']",
     ];
 
+    var currentElement = '';
+
     var baseStyle = 'all: initial; padding: 0.5rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; ';
     var onHoverStyle = baseStyle + 'background: rgba(0,100,255,1); ';
     var offHoverStyle = baseStyle + 'background: rgba(0,100,255,0.5); ';
@@ -26,6 +28,8 @@
         div.appendChild(h1);
 
         createCloseButton(div);
+
+        createInput(div);
 
         if (!Array.isArray(steps)) {
             steps = steps.split('\n');
@@ -55,6 +59,20 @@
             button.style.cssText = offHoverStyle + 'position: absolute; right: 1rem; ';
         };
         container.appendChild(button);
+    }
+
+    function createInput(container) {
+        var div = document.createElement("div");
+        div.style.cssText = 'margin-top: 1rem; ';
+        var input = document.createElement("input");
+        input.placeholder = 'Type here';
+        input.style.cssText = 'position: relative; display: block; ';
+        input.onkeypress = function() {
+            // TODO: find element/elements, point to it/them, if >1 tell user to be more specific, if <1 tell user not found and give a suggestion
+            processInput(input.value);
+        };
+        div.appendChild(input)
+        container.appendChild(div);
     }
 
     function createStep(step, stepNumber, container) {
@@ -87,9 +105,9 @@
         }
     }
 
-    var currentElement = '';
     function runSteps() {
         removeModal();
+        currentElement = '';
         var overallPassed = true;
         var message = '';
         for (var i=0; i<steps.length; i++) {
@@ -143,6 +161,47 @@
         message += '\n\nOverall status: ';
         message += overallPassed ? 'PASSED' : 'FAILED';
         alert(message);
+    }
+
+    function processInput(input) {
+        
+        // TODO: find element/elements, point to it/them, if >1 tell user to be more specific, if <1 tell user not found and give a suggestion
+
+        currentElement = '';
+        var matches = '';
+
+        // TODO: maybe do goto elsewhere
+
+        var click = input.match(/^(click|tap) (on )?(.+)/);
+        if (click) {
+            currentElement = click[click.length-1];
+            matches = document.querySelector(currentElement);
+            if (matches) {
+                // TODO: point to it/them
+            } else {
+                alert('Not found. Try this: ...'); // TODO: figure this out
+            }
+        }
+        var type = input.match(/^(type|enter) (in )?(.+)/);
+        if (type) {
+            // TODO: figure out allowed fields before use this line: currentElement = click[click.length-1];
+            matches = document.querySelector(currentElement);
+            if (matches) {
+                // TODO: point to it/them
+            } else {
+                alert('Not found. Try this: ...'); // TODO: figure this out
+            }
+        }
+        var check = input.match(/^(check|verify)( that (it('| i)s))? (.+)/);
+        if (check) {
+            // TODO: figure out allowed fields before use this line: currentElement = click[click.length-1];
+            matches = document.querySelector(currentElement);
+            if (matches) {
+                // TODO: point to it/them
+            } else {
+                alert('Not found. Try this: ...'); // TODO: figure this out
+            }
+        }
     }
 
 })();

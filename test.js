@@ -276,8 +276,8 @@
             colorizeInput();
             
             // prevent click from triggering button action (and prevent event propagation):
-            event.preventDefault();
-            event.stopPropagation();
+            (event || window.event).preventDefault();
+            (event || window.event).stopPropagation();
             return false;
         }
     }, false);

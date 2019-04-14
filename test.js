@@ -23,6 +23,7 @@
         div.id = 'in-browser-test-modal';
 
         var h1 = document.createElement("H1");
+        h1.id = 'in-browser-test-modal-h1';
         h1.innerHTML = 'Test Automation Steps:';
         h1.style.cssText = 'all: initial; font-family: avenir, arial, tahoma; font-weight: bold;';
         div.appendChild(h1);
@@ -95,6 +96,7 @@
 
     function createRunButton(container) {
         var button = document.createElement("button");
+        button.id = 'in-browser-test-modal-run';
         button.innerHTML = '&#9658; Run steps';
         button.style.cssText = 'all: initial; position: absolute; left: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma;';
         button.onclick = function() {

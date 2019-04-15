@@ -35,6 +35,8 @@
 
         createPointerPreview(div);
 
+        createRunButton(div);
+
         if (!Array.isArray(steps)) {
             steps = steps.split('\n');
         }
@@ -42,8 +44,6 @@
             var step = steps[i];
             createStep(step, i, div);
         }
-
-        createRunButton(div);
 
         document.body.insertBefore(div, document.body.firstChild);
     }
@@ -69,10 +69,13 @@
     function createPointerPreview(container) {
         var h1 = document.createElement("H1");
         h1.id = 'in-browser-test-modal-pointer-preview-h1';
-        h1.style.cssText = 'all: initial; font-family: avenir, arial, tahoma; font-weight: bold; ';
+        h1.innerHTML = 'Your pointer is hovering over: ';
+        h1.style.cssText = 'all: initial; font-family: avenir, arial, tahoma; font-weight: bold; color: grey; text-align: center; ';
         container.appendChild(h1);
         var div = document.createElement("div");
         div.id = 'in-browser-test-modal-pointer-preview';
+        div.innerHTML = '-';
+        div.style.cssText = 'color: grey; background: white; text-align: center; ';
         container.appendChild(div);
     }
 
@@ -80,11 +83,11 @@
         var sharedStyle = 'min-height: 20px; width: 90%; border: none; font-family: avenir, arial; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 3px; margin-bottom: 1rem; '
         
         var div = document.createElement("div");
-        div.style.cssText = 'margin-top: 1rem; ' + 'position: relative; ';
+        div.style.cssText = 'margin-top: 1rem; position: relative; ';
         
         var input = document.createElement("input");
         input.id = 'in-browser-test-modal-input';
-        input.style.cssText = 'position: relative; display: block; ' + 'color: rgba(255,255,255,0); background: rgba(255,255,255,0); caret-color: black; ' + sharedStyle;
+        input.style.cssText = 'position: relative; display: block; color: rgba(255,255,255,0); background: rgba(255,255,255,0); caret-color: black; ' + sharedStyle;
         input.placeholder = 'click/type/check something';
         input.onkeyup = function() {
             // TODO: find element/elements, point to it/them, if >1 tell user to be more specific, if <1 tell user not found and give a suggestion
@@ -95,6 +98,12 @@
         var colorOverlay = document.createElement("div");
         colorOverlay.id = 'in-browser-test-modal-input-overlay';
         colorOverlay.style.cssText = 'position: absolute; top: 0; left: 0; z-index: -1; color: grey; background: rgba(100,200,255,0.5); ' + sharedStyle;
+        input.onmouseover = function() {
+            colorOverlay.style.cssText = 'position: absolute; top: 0; left: 0; z-index: -1; color: grey; background: rgba(66,134,244,0.5); ' + sharedStyle;
+        };
+        input.onmouseout = function() {
+            colorOverlay.style.cssText = 'position: absolute; top: 0; left: 0; z-index: -1; color: grey; background: rgba(100,200,255,0.5); ' + sharedStyle;
+        };
         div.appendChild(colorOverlay);
         
         container.appendChild(div);
@@ -110,16 +119,16 @@
     function createRunButton(container) {
         var button = document.createElement("button");
         button.id = 'in-browser-test-modal-run';
-        button.innerHTML = '&#9658; Run steps';
-        button.style.cssText = 'all: initial; position: absolute; left: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma;';
+        button.innerHTML = '&#9658; Run the following steps:';
+        button.style.cssText = 'all: initial; left: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; margin: 0.5rem; ';
         button.onclick = function() {
             runSteps();
         };
         button.onmouseover = function() {
-            button.style.cssText = onHoverStyle + 'position: absolute; left: 1rem; ';
+            button.style.cssText = onHoverStyle + 'left: 1rem; margin: 0.5rem; ';
         };
         button.onmouseout = function() {
-            button.style.cssText = offHoverStyle + 'position: absolute; left: 1rem; ';
+            button.style.cssText = offHoverStyle + 'left: 1rem; margin: 0.5rem; ';
         };
         container.appendChild(button);
     }
@@ -199,8 +208,8 @@
 
         // TODO: maybe do goto elsewhere
 
-        if (input == 'click ') {
-            document.getElementById('in-browser-test-modal-input-overlay').innerHTML += ' <span style="font-size:small;">(Click an element to auto-fill.)</span>';
+        if (input == 'click') {
+            document.getElementById('in-browser-test-modal-input-overlay').innerHTML += ' <span style="font-size:small;">(Right-click an element to auto-fill this.)</span>';
         }
 
         var click = input.match(/^(click|tap) (on )?(.+)/);
@@ -242,12 +251,12 @@
 
     function colorizeInput() {
         var newText = document.getElementById('in-browser-test-modal-input').value;
-        newText = highlightInputWord(newText, 'click ', 'blue');
-        newText = highlightInputWord(newText, 'hit ', 'blue');
-        newText = highlightInputWord(newText, 'type ', 'red');
-        newText = highlightInputWord(newText, 'enter ', 'red');
-        newText = highlightInputWord(newText, 'check ', 'green');
-        newText = highlightInputWord(newText, 'verify ', 'green');
+        newText = highlightInputWord(newText, 'click', 'blue');
+        newText = highlightInputWord(newText, 'hit', 'blue');
+        newText = highlightInputWord(newText, 'type', 'red');
+        newText = highlightInputWord(newText, 'enter', 'red');
+        newText = highlightInputWord(newText, 'check', 'green');
+        newText = highlightInputWord(newText, 'verify', 'green');
         if (findElement(currentElement)) {
             newText = highlightInputWord(newText, currentElement, 'black');
         }
@@ -261,20 +270,21 @@
         );
     }
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('contextmenu', function autoFillClickIdentifier(event) {
         var e = event.target;
         var tag = (e.tagName) ? e.tagName.toLowerCase() : '';
         var id = (e.id) ? '#' + e.id : '';
         var classes = (e.className) ? '.' + e.className.replace(' ','.') : '';
         var isInput = (id == '#in-browser-test-modal-input');
+        var isRunButton = (id == '#in-browser-test-modal-run');
         var input = document.getElementById('in-browser-test-modal-input');
         var isClick = (input && input.value && input.value.match(/^(click |hit )/));
-        if (input && !isInput && (input.value === '' || isClick && startsWithCommandVerb(document.getElementById('in-browser-test-modal-input').value))) {
+        if (input && !isInput && !isRunButton && (input.value === '' || isClick && startsWithCommandVerb(document.getElementById('in-browser-test-modal-input').value))) {
             var sentence = 'click ' + tag + id + classes;
             document.getElementById('in-browser-test-modal-input').value = sentence;
             document.getElementById('in-browser-test-modal-input-overlay').innerHTML = sentence;
             colorizeInput();
-            
+
             // prevent click from triggering button action (and prevent event propagation):
             (event || window.event).preventDefault();
             (event || window.event).stopPropagation();
@@ -287,12 +297,12 @@
         var tag = (e.tagName) ? e.tagName.toLowerCase() : '';
         var id = (e.id) ? '#' + e.id : '';
         var classes = (e.className) ? '.' + e.className.replace(' ','.') : '';
-        document.getElementById('in-browser-test-modal-pointer-preview-h1').innerHTML = 'Your pointer is hovering over: ';
+
         document.getElementById('in-browser-test-modal-pointer-preview').innerHTML = tag + id + classes;
     }, false);
 
     function startsWithCommandVerb(sentence) {
-        var commandVerbs = ['click ', 'hit ', 'type ', 'enter ', 'check ', 'verify '];
+        var commandVerbs = ['click', 'hit', 'type', 'enter', 'check', 'verify'];
         for (var i=0; i<commandVerbs.length; i++) {
             var startsWith = sentence.indexOf(commandVerbs[i]) === 0;
             if (startsWith) {
@@ -310,6 +320,9 @@
         element.onmousedown = dragOnMouseDown;
 
         function dragOnMouseDown(event) {
+            if ((event.target.id == 'in-browser-test-modal-input') || (event.target.id == 'in-browser-test-modal-run')) {
+                return;
+            }
             var event = event || window.event;
             event.preventDefault();
             x = event.clientX;

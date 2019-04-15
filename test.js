@@ -120,15 +120,15 @@
         var button = document.createElement("button");
         button.id = 'in-browser-test-modal-run';
         button.innerHTML = '&#9658; Run the following steps:';
-        button.style.cssText = 'all: initial; left: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; margin: 0.5rem; ';
+        button.style.cssText = 'all: initial; left: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; margin: 0.5rem; margin-top: 2rem; ';
         button.onclick = function() {
             runSteps();
         };
         button.onmouseover = function() {
-            button.style.cssText = onHoverStyle + 'left: 1rem; margin: 0.5rem; ';
+            button.style.cssText = onHoverStyle + 'left: 1rem; margin: 0.5rem; margin-top: 2rem; ';
         };
         button.onmouseout = function() {
-            button.style.cssText = offHoverStyle + 'left: 1rem; margin: 0.5rem; ';
+            button.style.cssText = offHoverStyle + 'left: 1rem; margin: 0.5rem; margin-top: 2rem; ';
         };
         container.appendChild(button);
     }

@@ -2,7 +2,7 @@
 
     var steps = [
 //         'go to https://www.google.com/', // TODO: maybe do goto elsewhere
-        'click on .gLFyf', // TODO: get ID of element clicked on (see document.addEventListener below)
+        'click on .gLFyf',
         'type chrome extensions and where to find them',
         "check that it's chrome extensions and where to find them",
         "click on input[value='Google Search']",
@@ -237,7 +237,7 @@
             }
         }
         if (!matches) {
-            console.log(currentElement + ' not found. Try this: ...'); // TODO: figure this out
+            console.log(currentElement + ' not found. Try this: ...'); // TODO: figure out this message
         }
     }
 

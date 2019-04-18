@@ -209,7 +209,7 @@
         // TODO: maybe do goto elsewhere
 
         if (input == 'click') {
-            document.getElementById('in-browser-test-modal-input-overlay').innerHTML += ' <span style="font-size:small;">(Right-click an element to auto-fill this.)</span>';
+            document.getElementById('in-browser-test-modal-input-overlay').innerHTML += ' <span style="font-size:small;">(RIGHT-click an element to auto-fill this.)</span>';
         }
 
         var click = input.match(/^(click|tap) (on )?(.+)/);

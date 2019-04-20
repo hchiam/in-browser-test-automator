@@ -1,30 +1,26 @@
 (function() {
 
-    var steps = [
-//         'go to https://www.google.com/', // TODO: maybe do goto elsewhere
-        'click on .gLFyf',
-        'type chrome extensions and where to find them',
-        "check that it's chrome extensions and where to find them",
-        "click on input[value='Google Search']",
-//         "click on button[aria-label='Google Search']",
-    ];
-
+    var numberOfStepsCreated = 0;
     var currentElement = '';
 
     var baseStyle = 'all: initial; padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; ';
     var onHoverStyle = baseStyle + 'background: rgba(0,100,255,1); ';
     var offHoverStyle = baseStyle + 'background: rgba(0,100,255,0.5); ';
 
-    createModal(steps);
+    createModal();
 
-    function createModal(errors) {
+    addStep(); // initialize
+
+    function createModal() {
         var div = document.createElement("div");
         div.style.cssText = 'all: initial; position: fixed; left: 25%; top: 25vh; width: 50%; height: 50%; padding: 1rem; z-index: 9999; border: 1rem solid rgba(0,100,255,0.5); background: rgba(255,255,255,0.75); color: black; overflow-y: auto; border-radius: 5px; font-family: avenir, arial, tahoma; box-shadow: inset 0 -50px 50px -55px rgba(0, 0, 0, 1);';
         div.id = 'in-browser-test-modal';
+        div.className = 'in-browser-test-modal';
         makeElementDraggable(div);
 
         var h1 = document.createElement("H1");
         h1.id = 'in-browser-test-modal-h1';
+        h1.className = 'in-browser-test-modal';
         h1.innerHTML = 'Test Automation Steps:';
         h1.style.cssText = 'all: initial; font-family: avenir, arial, tahoma; font-weight: bold;';
         div.appendChild(h1);
@@ -37,13 +33,10 @@
 
         createRunButton(div);
 
-        if (!Array.isArray(steps)) {
-            steps = steps.split('\n');
-        }
-        for (var i=0; i<steps.length; i++) {
-            var step = steps[i];
-            createStep(step, i, div);
-        }
+        var steps = document.createElement("div");
+        steps.id = 'steps';
+        steps.className = 'in-browser-test-modal';
+        div.appendChild(steps);
 
         document.body.insertBefore(div, document.body.firstChild);
     }
@@ -51,6 +44,7 @@
     function createCloseButton(container) {
         var button = document.createElement("button");
         button.id = 'in-browser-test-modal-close';
+        button.className = 'in-browser-test-modal';
         button.innerHTML = 'X';
         button.style.cssText = 'all: initial; position: absolute; right: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma;';
         button.title = 'Close';
@@ -69,11 +63,13 @@
     function createPointerPreview(container) {
         var h1 = document.createElement("H1");
         h1.id = 'in-browser-test-modal-pointer-preview-h1';
+        h1.className = 'in-browser-test-modal';
         h1.innerHTML = 'Your pointer is hovering over: ';
         h1.style.cssText = 'all: initial; font-family: avenir, arial, tahoma; font-weight: bold; color: grey; text-align: center; ';
         container.appendChild(h1);
         var div = document.createElement("div");
         div.id = 'in-browser-test-modal-pointer-preview';
+        div.className = 'in-browser-test-modal';
         div.innerHTML = '-';
         div.style.cssText = 'color: grey; background: white; text-align: center; ';
         container.appendChild(div);
@@ -83,20 +79,23 @@
         var sharedStyle = 'min-height: 20px; width: 90%; border: none; font-family: avenir, arial; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 3px; margin-bottom: 1rem; '
         
         var div = document.createElement("div");
+        div.className = 'in-browser-test-modal';
         div.style.cssText = 'margin-top: 1rem; position: relative; ';
         
         var input = document.createElement("input");
         input.id = 'in-browser-test-modal-input';
+        input.className = 'in-browser-test-modal';
         input.style.cssText = 'position: relative; display: block; color: rgba(255,255,255,0); background: rgba(255,255,255,0); caret-color: black; ' + sharedStyle;
         input.placeholder = 'click/type/check something';
         input.onkeyup = function() {
             // TODO: find element/elements, point to it/them, if >1 tell user to be more specific, if <1 tell user not found and give a suggestion
-            processInput(input.value);
+            // processInput(input.value);
         };
         div.appendChild(input);
         
         var colorOverlay = document.createElement("div");
         colorOverlay.id = 'in-browser-test-modal-input-overlay';
+        colorOverlay.className = 'in-browser-test-modal';
         colorOverlay.style.cssText = 'position: absolute; top: 0; left: 0; z-index: -1; color: grey; background: rgba(100,200,255,0.5); ' + sharedStyle;
         input.onmouseover = function() {
             colorOverlay.style.cssText = 'position: absolute; top: 0; left: 0; z-index: -1; color: grey; background: rgba(66,134,244,0.5); ' + sharedStyle;
@@ -108,17 +107,68 @@
         
         container.appendChild(div);
     }
+    
+	function addStep() {
+        numberOfStepsCreated++;
 
-    function createStep(step, stepNumber, container) {
-        var p = document.createElement("p");
-        p.id = 'in-browser-test-modal-step-' + stepNumber;
-        p.innerHTML = step;
-        container.appendChild(p);
-    }
+        var div = document.createElement("div");
+        div.id = 'step-' + numberOfStepsCreated;
+        div.className = 'in-browser-test-modal';
+        
+        var select = document.createElement('select');
+        select.className = 'action';
+        select.className = 'in-browser-test-modal';
+
+        var optionClick = document.createElement('option');
+        optionClick.className = 'in-browser-test-modal';
+        optionClick.value = 'click';
+        optionClick.innerHTML = 'Click on:';
+        select.appendChild(optionClick);
+
+        var optionSelect = document.createElement('option');
+        optionSelect.className = 'in-browser-test-modal';
+        optionSelect.value = 'select';
+        optionSelect.innerHTML = 'Select:';
+        select.appendChild(optionSelect);
+
+        var optionEnter = document.createElement('option');
+        optionEnter.className = 'in-browser-test-modal';
+        optionEnter.value = 'enter';
+        optionEnter.innerHTML = 'Enter:';
+        select.appendChild(optionEnter);
+
+        var optionShouldShow = document.createElement('option');
+        optionShouldShow.className = 'in-browser-test-modal';
+        optionShouldShow.value = 'check';
+        optionShouldShow.innerHTML = 'Should show:';
+        select.appendChild(optionShouldShow);
+
+        var input = document.createElement('input');
+        input.className = 'in-browser-test-modal';
+        input.placeholder = '';
+
+        var button = document.createElement('button');
+        button.id = 'remove-step-' + numberOfStepsCreated;
+        button.className = 'in-browser-test-modal';
+        button.innerHTML = '-';
+
+        div.appendChild(select);
+        div.appendChild(input);
+        div.appendChild(button);
+
+        var steps = document.getElementById('steps');
+        steps.appendChild(div);
+        
+		// $('#remove-step-' + numberOfStepsCreated).click(function useSettings(e) {
+		// 	var step = e.target.id.replace(/^remove-step-/,'');
+		// 	$("#step-" + step).remove();
+		// })
+	}
 
     function createRunButton(container) {
         var button = document.createElement("button");
         button.id = 'in-browser-test-modal-run';
+        button.className = 'in-browser-test-modal';
         button.innerHTML = '&#9658; Run the following steps:';
         button.style.cssText = 'all: initial; left: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; margin: 0.5rem; margin-top: 2rem; ';
         button.onclick = function() {
@@ -197,50 +247,6 @@
         alert(message);
     }
 
-    function processInput(input) {
-
-        colorizeInput();
-
-        // TODO: find element/elements, point to it/them, if >1 tell user to be more specific, if <1 tell user not found and give a suggestion
-
-        currentElement = '';
-        var matches = '';
-
-        // TODO: maybe do goto elsewhere
-
-        if (input == 'click') {
-            document.getElementById('in-browser-test-modal-input-overlay').innerHTML += ' <span style="font-size:small;">(RIGHT-click an element to auto-fill this.)</span>';
-        }
-
-        var click = input.match(/^(click|tap) (on )?(.+)/);
-        if (click) {
-            currentElement = click[click.length-1];
-            matches = document.querySelector(currentElement);
-            if (matches) {
-                // TODO: point to it/them
-            }
-        }
-        var type = input.match(/^(type|enter) (in )?(.+)/);
-        if (type) {
-            // TODO: figure out allowed fields before use this line: currentElement = click[click.length-1];
-            matches = findElement(currentElement);
-            if (matches) {
-                // TODO: point to it/them
-            }
-        }
-        var check = input.match(/^(check|verify)( that (it('| i)s))? (.+)/);
-        if (check) {
-            // TODO: figure out allowed fields before use this line: currentElement = click[click.length-1];
-            matches = findElement(currentElement);
-            if (matches) {
-                // TODO: point to it/them
-            }
-        }
-        if (!matches) {
-            console.log(currentElement + ' not found. Try this: ...'); // TODO: figure out this message
-        }
-    }
-
     function findElement(elementSelector) {
         try {
             return document.querySelector(currentElement);
@@ -249,48 +255,29 @@
         }
     }
 
-    function colorizeInput() {
-        var newText = document.getElementById('in-browser-test-modal-input').value;
-        newText = highlightInputWord(newText, 'click', 'blue');
-        newText = highlightInputWord(newText, 'hit', 'blue');
-        newText = highlightInputWord(newText, 'type', 'red');
-        newText = highlightInputWord(newText, 'enter', 'red');
-        newText = highlightInputWord(newText, 'check', 'green');
-        newText = highlightInputWord(newText, 'verify', 'green');
-        if (findElement(currentElement)) {
-            newText = highlightInputWord(newText, currentElement, 'black');
-        }
-        document.getElementById('in-browser-test-modal-input-overlay').innerHTML = newText;
-    }
-
-    function highlightInputWord(sentence, word, color) {
-        return sentence.replace(
-            word,
-            '<span style="color:' + color + ';">' + word + '</span>'
-        );
-    }
-
-    document.addEventListener('contextmenu', function autoFillClickIdentifier(event) {
+    function autoFillClickIdentifier(event) {
         var e = event.target;
         var tag = (e.tagName) ? e.tagName.toLowerCase() : '';
         var id = (e.id) ? '#' + e.id : '';
         var classes = (e.className) ? '.' + e.className.replace(' ','.') : '';
         var isInput = (id == '#in-browser-test-modal-input');
         var isRunButton = (id == '#in-browser-test-modal-run');
-        var input = document.getElementById('in-browser-test-modal-input');
-        var isClick = (input && input.value && input.value.match(/^(click |hit )/));
-        if (input && !isInput && !isRunButton && (input.value === '' || isClick && startsWithCommandVerb(document.getElementById('in-browser-test-modal-input').value))) {
+        var isModalUIElement = (classes == '.in-browser-test-modal');
+        if (!isInput && !isRunButton && !isModalUIElement) {
             var sentence = 'click ' + tag + id + classes;
             document.getElementById('in-browser-test-modal-input').value = sentence;
             document.getElementById('in-browser-test-modal-input-overlay').innerHTML = sentence;
-            colorizeInput();
-
+            
             // prevent click from triggering button action (and prevent event propagation):
             (event || window.event).preventDefault();
             (event || window.event).stopPropagation();
             return false;
         }
-    }, false);
+    }
+
+    document.addEventListener('click', autoFillClickIdentifier, false);
+
+    document.addEventListener('contextmenu', autoFillClickIdentifier, false);
 
     document.addEventListener('mouseover', function(event) {
         var e = event.target;
@@ -300,17 +287,6 @@
 
         document.getElementById('in-browser-test-modal-pointer-preview').innerHTML = tag + id + classes;
     }, false);
-
-    function startsWithCommandVerb(sentence) {
-        var commandVerbs = ['click', 'hit', 'type', 'enter', 'check', 'verify'];
-        for (var i=0; i<commandVerbs.length; i++) {
-            var startsWith = sentence.indexOf(commandVerbs[i]) === 0;
-            if (startsWith) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     function makeElementDraggable(element) {
         var xChange = 0;

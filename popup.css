@@ -2,24 +2,41 @@
     background: rgb(32,32,32);
     color: whitesmoke;
     font-family: avenir, arial;
-    transition: 0.5s;
+    transition: 0.1s;
+}
+
+body {
+    width: 300px;
+}
+
+.action {
+    text-align-last: center;
 }
 
 button {
-    padding: 10px;
+    padding: 5px 10px;
     margin: 10px;
     border: 1px solid transparent;
     border: 1px solid #eee;
-    color: transparent;
+    color: white;
+}
+
+button#start-button {
     width: 50px;
     height: 50px;
     background-image: url("blue_play_button.png");
     background-size: cover;
+    color: rgba(0,0,0,0);
 }
 
-button:hover {
+button:hover,
+button#start-button:hover {
     background: rgb(20, 31, 43);
     color: lime;
     border-radius: 0.5rem;
     box-shadow: 0 14px 28px rgba(90,90,90,0.25), 0 10px 10px rgba(90,90,90,0.22);
+}
+
+button:active {
+    background: rgb(100, 150, 255);
 }

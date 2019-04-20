@@ -32,12 +32,3 @@
 	})
 
 })();
-
-
-document.addEventListener('contextmenu', function autoFillClickIdentifier(event) {
-	var e = event.target;
-	var tag = (e.tagName) ? e.tagName.toLowerCase() : '';
-	var id = (e.id) ? '#' + e.id : '';
-	var classes = (e.className) ? '.' + e.className.replace(' ','.') : '';
-	alert(tag + id + classes);
-}, false);

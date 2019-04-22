@@ -1,6 +1,3 @@
-
-// TODO: try putting this all inside test.js (in-browser, not in pop-up)
-
 // when the user clicks on an element on the page,
 // then that element's "identifier" should be added to a list stored locally:
 document.addEventListener('click', function(e) {

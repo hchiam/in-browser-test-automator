@@ -35,6 +35,7 @@
         $('#in-browser-test-modal').append(`
             <button id="add-step" 
                 class="in-browser-test-modal"
+                title="Add step"
                 style="all:initial; background:rgba(0,100,255,0.5); width:2rem; height:2rem; border-radius:1rem; text-align:center; margin-top:0.5rem; ">+</button>
         `);
 
@@ -101,6 +102,7 @@
                 <input placeholder="" class="in-browser-test-modal" style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem;">
                 <button id="remove-step-${numberOfStepsCreated}" 
                     class="in-browser-test-modal"
+                    title="Remove step"
                     style="all:initial; background:lightgrey; width:2rem; height:2rem; border-radius:1rem; text-align:center;">-</button>
             </div>
 		`);

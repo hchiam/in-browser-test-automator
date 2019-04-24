@@ -99,7 +99,9 @@
                     <option value="check" class="in-browser-test-modal">
                         Should show:</option>
                 </select> : 
-                <input placeholder="" class="in-browser-test-modal" style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem;">
+                <input placeholder="(Right-click an element to get its identifier.)" 
+                    class="in-browser-test-modal" 
+                    style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem; width:50%; ">
                 <button id="remove-step-${numberOfStepsCreated}" 
                     class="in-browser-test-modal"
                     title="Remove step"
@@ -111,6 +113,20 @@
 			let step = e.target.id.replace(/^remove-step-/,'');
 			$("#step-" + step).remove();
         })
+
+        $(`#steps>div#step-${numberOfStepsCreated}>select`).change(function(event){
+            let value = $(this).find("option:selected").attr('value');
+            let selector = '#steps>div#' + event.target.parentNode.id + '>input';
+            if (value == 'click' || value == 'select') {
+                $(selector).attr('placeholder', '(Right-click an element to get its identifier.)');
+            } else if (value == 'enter' || value == 'check') {
+                $(selector).val('');
+                $(selector).attr('placeholder', '(Some text.)');
+            } else {
+                $(selector).val('');
+                $(selector).attr('placeholder', '');
+            }
+        });
 
         $("select.in-browser-test-modal, input.in-browser-test-modal").focus(function() {
             $(this).css("outline","none");
@@ -247,8 +263,12 @@
         let isInModal = classes.includes('in-browser-test-modal');
         if (!isInModal) {
             let identifier = getIdentifier(event);
-            // document.getElementById('in-browser-test-modal-input').value = sentence;
-            // document.getElementById('in-browser-test-modal-input-overlay').innerHTML = sentence;
+            let selectFound = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>select`);
+            let useValue = (selectFound.value == 'click') || (selectFound.value == 'select');
+            let inputFound = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
+            if (useValue && inputFound) {
+                inputFound.value = identifier;
+            }
             
             // prevent click from triggering button action (and prevent event propagation):
             (event || window.event).preventDefault();

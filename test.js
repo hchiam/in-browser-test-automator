@@ -296,7 +296,7 @@
         element.onmousedown = dragOnMouseDown;
 
         function dragOnMouseDown(event) {
-            if ((event.target.className = 'in-browser-test-modal') || (event.target.id == 'in-browser-test-modal-input') || (event.target.id == 'in-browser-test-modal-run')) {
+            if ((event.target.id == 'in-browser-test-modal-input') || (event.target.id == 'in-browser-test-modal-run')) {
                 return;
             }
             var event = event || window.event;

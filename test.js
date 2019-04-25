@@ -122,6 +122,7 @@
             } else if (value == 'enter' || value == 'check') {
                 $(selector).val('');
                 $(selector).attr('placeholder', '(Some text.)');
+                $(selector).focus();
             } else {
                 $(selector).val('');
                 $(selector).attr('placeholder', '');

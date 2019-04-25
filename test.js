@@ -4,9 +4,9 @@
     let currentElement = '';
     let haveClickEventListener = false;
 
-    let baseStyle = 'all: initial; padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; ';
-    let onHoverStyle = baseStyle + 'background: rgba(0,100,255,1); ';
-    let offHoverStyle = baseStyle + 'background: rgba(0,100,255,0.5); ';
+    let baseStyle = 'all:initial; padding:0.25rem; margin:0.25rem; display:inline; border-radius:5px; font-family:avenir,arial,tahoma; ';
+    let onHoverStyle = baseStyle + 'background:rgba(0,100,255,1); ';
+    let offHoverStyle = baseStyle + 'background:rgba(0,100,255,0.5); ';
 
     removeModal(); // reset
     createModal();
@@ -15,7 +15,7 @@
 
     function createModal() {
         let div = document.createElement("div");
-        div.style.cssText = 'all: initial; position: fixed; left: 25%; top: 25vh; width: 50%; height: 50%; padding: 1rem; z-index: 9999; border: 1rem solid rgba(0,100,255,0.5); background: rgba(255,255,255,0.75); color: black; overflow-y: auto; border-radius: 5px; font-family: avenir, arial, tahoma; box-shadow: inset 0 -50px 50px -55px rgba(0, 0, 0, 1);';
+        div.style.cssText = 'all:initial; position:fixed; left:25%; top:25vh; width:50%; height:50%; padding:1rem; z-index:9999; border:1rem solid rgba(0,100,255,0.5); background:rgba(255,255,255,0.75); color:black; overflow-y:auto; border-radius:5px; font-family:avenir,arial,tahoma; box-shadow:inset 0 -50px 50px -55px rgba(0, 0, 0, 1);';
         div.id = 'in-browser-test-modal';
         div.className = 'in-browser-test-modal';
         makeElementDraggable(div);
@@ -56,16 +56,16 @@
         button.id = 'in-browser-test-modal-close';
         button.className = 'in-browser-test-modal';
         button.innerHTML = 'X';
-        button.style.cssText = 'all: initial; position: absolute; right: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; width:2rem; height:2rem; border-radius:2rem; text-align:center; ';
+        button.style.cssText = 'all:initial; position:absolute; right:1rem; background:rgba(0,100,255,0.5); padding:0.25rem; margin:0.25rem; display:inline; border-radius:5px; font-family:avenir,arial,tahoma; width:2rem; height:2rem; border-radius:2rem; text-align:center; ';
         button.title = 'Close';
         button.onclick = function() {
             removeModal();
         };
         button.onmouseover = function() {
-            button.style.cssText = onHoverStyle + 'position: absolute; right: 1rem;  width:2rem; height:2rem; border-radius:2rem; text-align:center; box-shadow:0 3px 3px rgba(0,0,0,0.5); ';
+            button.style.cssText = onHoverStyle + 'position:absolute; right:1rem;  width:2rem; height:2rem; border-radius:2rem; text-align:center; box-shadow:0 3px 3px rgba(0,0,0,0.5); ';
         };
         button.onmouseout = function() {
-            button.style.cssText = offHoverStyle + 'position: absolute; right: 1rem;  width:2rem; height:2rem; border-radius:2rem; text-align:center; box-shadow:none; ';
+            button.style.cssText = offHoverStyle + 'position:absolute; right:1rem;  width:2rem; height:2rem; border-radius:2rem; text-align:center; box-shadow:none; ';
         };
         container.appendChild(button);
     }
@@ -75,13 +75,13 @@
         h1.id = 'in-browser-test-modal-pointer-preview-h1';
         h1.className = 'in-browser-test-modal';
         h1.innerHTML = 'Your pointer is hovering over: ';
-        h1.style.cssText = 'all: initial; font-family: avenir, arial, tahoma; font-weight: bold; color: grey; text-align: center; ';
+        h1.style.cssText = 'all:initial; font-family:avenir,arial,tahoma; font-weight:bold; color:grey; text-align:center; ';
         container.appendChild(h1);
         let div = document.createElement("div");
         div.id = 'in-browser-test-modal-pointer-preview';
         div.className = 'in-browser-test-modal';
         div.innerHTML = '-';
-        div.style.cssText = 'color: grey; background: white; text-align: center; min-height:3rem; ';
+        div.style.cssText = 'color:grey; background:white; text-align:center; min-height:3rem; ';
         container.appendChild(div);
     }
 
@@ -164,15 +164,15 @@
         button.id = 'in-browser-test-modal-run';
         button.className = 'in-browser-test-modal';
         button.innerHTML = '&#9658; Run the following steps:';
-        button.style.cssText = 'all: initial; left: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; ';
+        button.style.cssText = 'all:initial; left:1rem; background:rgba(0,100,255,0.5); padding:0.25rem; margin:0.25rem; display:inline; border-radius:5px; font-family:avenir,arial,tahoma; ';
         button.onclick = function() {
             runSteps();
         };
         button.onmouseover = function() {
-            button.style.cssText = onHoverStyle + 'left: 1rem; margin: 0.5rem; margin-top: 2rem; box-shadow:0 3px 3px rgba(0,0,0,0.5); ';
+            button.style.cssText = onHoverStyle + 'left:1rem; margin:0.5rem; margin-top:2rem; box-shadow:0 3px 3px rgba(0,0,0,0.5); ';
         };
         button.onmouseout = function() {
-            button.style.cssText = offHoverStyle + 'left: 1rem; margin: 0.5rem; margin-top: 2rem; box-shadow:none; ';
+            button.style.cssText = offHoverStyle + 'left:1rem; margin:0.5rem; margin-top:2rem; box-shadow:none; ';
         };
         container.appendChild(button);
     }

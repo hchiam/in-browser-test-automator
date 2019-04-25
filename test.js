@@ -80,7 +80,7 @@
         div.id = 'in-browser-test-modal-pointer-preview';
         div.className = 'in-browser-test-modal';
         div.innerHTML = '-';
-        div.style.cssText = 'color: grey; background: white; text-align: center; ';
+        div.style.cssText = 'color: grey; background: white; text-align: center; min-height:3rem; ';
         container.appendChild(div);
     }
 
@@ -156,7 +156,7 @@
         button.id = 'in-browser-test-modal-run';
         button.className = 'in-browser-test-modal';
         button.innerHTML = '&#9658; Run the following steps:';
-        button.style.cssText = 'all: initial; left: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; margin: 0.5rem; margin-top: 2rem; ';
+        button.style.cssText = 'all: initial; left: 1rem; background: rgba(0,100,255,0.5); padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; ';
         button.onclick = function() {
             runSteps();
         };

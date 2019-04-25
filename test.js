@@ -185,7 +185,7 @@
 
     function findElement(elementSelector) {
         try {
-            return document.querySelector(currentElement);
+            return document.querySelector(elementSelector);
         } catch {
             return null;
         }
@@ -200,12 +200,18 @@
         return identifier;
     }
 
+    function getIdentifierBeforeClicked() {
+        // when you want the identifier before you click, use this instead of getIdentifier(event)
+        let identifier = document.getElementById('in-browser-test-modal-pointer-preview').innerHTML
+        return identifier;
+    }
+
     function autoFillClickIdentifier(event) {
         let e = event.target;
         let classes = (e.className) ? '.' + e.className.trim().replace(/ /g,'.') : '';
-        let isInModal = classes.includes('in-browser-test-modal');
+        let isInModal = classes.includes('in-browser-test-modal') || getIdentifierBeforeClicked().includes('in-browser-test-modal');
         if (!isInModal) {
-            let identifier = getIdentifier(event);
+            let identifier = getIdentifierBeforeClicked(); // not getIdentifier(event);
             let selectFound = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>select`);
             let useValue = (selectFound.value == 'click') || (selectFound.value == 'select');
             let inputFound = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
@@ -271,60 +277,74 @@
     }
 
     function runSteps() {
+        document.removeEventListener('click', autoFillClickIdentifier, false);
         currentElement = '';
         let overallPassed = true;
         let message = '';
-        for (let i=0; i<steps.length; i++) {
-            let step = steps[i];
-            
-            // TODO: maybe do goto elsewhere:
+        let delay = 1000;
+        let done = $("element").length;
+        $('#steps').find('select').each(function (i) {
+            let self = this; // so self inside setTimeout points to the right "this"
+            setTimeout(function () { // add delay between each action
+                let action = self.value;
+                let value = $(`#steps>#step-${i+1}>input`).val();
+                
+                // TODO: maybe do goto elsewhere:
 
-//             let go = step.match(/^go (to )?(.+)/);
-//             if (go) {
-//                 let url = go[go.length-1];
-//                 message += '\nStep ' + (i+1) + ': go to ' + url;
-//                 window.location.href = url;
-//                 continue;
-//             }
-            let click = step.match(/^(click|tap) (on )?(.+)/);
-            if (click) {
-                currentElement = click[click.length-1];
-                message += '\nStep ' + (i+1);
-                if (findElement(currentElement)) {
-                    message += ': click on ' + currentElement;
-                    findElement(currentElement).click()
-                } else {
-                    message += ' FAILED: could not find ' + currentElement;
-                    overallPassed = false;
-                    break;
+    //             let go = step.match(/^go (to )?(.+)/);
+    //             if (go) {
+    //                 let url = go[go.length-1];
+    //                 message += '\nStep ' + (i+1) + ': go to ' + url;
+    //                 window.location.href = url;
+    //                 continue;
+    //             }
+                if (action == 'click') {
+                    currentElement = value;
+                    message += '\nStep ' + (i+1);
+                    if (findElement(currentElement)) {
+                        message += ': click on ' + currentElement;
+                        findElement(currentElement).click()
+                    } else {
+                        message += ' FAILED: could not find ' + currentElement;
+                        overallPassed = false;
+                        return false;
+                    }
+                } else if (action == 'select') {
+                    // TODO: google how to select element
+                    
+                    // currentElement = value;
+                    // message += '\nStep ' + (i+1);
+                    // if (findElement(currentElement)) {
+                    //     message += ': click on ' + currentElement;
+                    //     findElement(currentElement).click()
+                    // } else {
+                    //     message += ' FAILED: could not find ' + currentElement;
+                    //     overallPassed = false;
+                    //     return false;
+                    // }
+                } else if (action == 'enter') {
+                    message += '\nStep ' + (i+1) + ': type in ' + currentElement + ': "' + value + '"';
+                    findElement(currentElement).value = value;
+                } else if (action == 'check') {
+                    let expectedValue = value;
+                    let actualValue = findElement(currentElement).value || findElement(currentElement).innerHTML;
+                    let equals = (actualValue === expectedValue);
+                    message += '\nStep ' + (i+1) + ' ';
+                    message += equals ? ('PASSED: "' + actualValue + '" is "' + expectedValue + '"') : ('FAILED: "' + actualValue + '" is NOT "' + expectedValue + '"');
+                    if (!equals) {
+                        overallPassed = false;
+                        return false;
+                    }
                 }
-                continue;
-            }
-            let type = step.match(/^(type|enter) (in )?(.+)/);
-            if (type) {
-                let value = type[type.length-1];
-                message += '\nStep ' + (i+1) + ': type in ' + currentElement + ': "' + value + '"';
-                findElement(currentElement).value = value;
-                findElement(currentElement).innerHTML = value;
-                continue;
-            }
-            let check = step.match(/^(check|verify)( that (it('| i)s))? (.+)/);
-            if (check) {
-                let expectedValue = check[check.length-1];
-                let actualValue = findElement(currentElement).value || findElement(currentElement).innerHTML;
-                let equals = (actualValue === expectedValue);
-                message += '\nStep ' + (i+1) + ' ';
-                message += equals ? ('PASSED: "' + actualValue + '" is "' + expectedValue + '"') : ('FAILED: "' + actualValue + '" is NOT "' + expectedValue + '"');
-                if (!equals) {
-                    overallPassed = false;
-                    break;
+                
+                if (i === done) {
+                    message += '\n\nOverall status: ';
+                    message += overallPassed ? 'PASSED' : 'FAILED';
+                    // TODO: instead of alert(message), just make the steps colour as red-orange #f4bc42 / green-blue #41f4ca
+                    document.addEventListener('click', autoFillClickIdentifier, false);
                 }
-                continue;
-            }
-        }
-        message += '\n\nOverall status: ';
-        message += overallPassed ? 'PASSED' : 'FAILED';
-        alert(message);
+            }, i*delay); // setTimeout
+        }); // each()
     }
 
 })();

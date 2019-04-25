@@ -88,7 +88,7 @@
         numberOfStepsCreated++;
         
         $('#steps').append(`
-            <div id="step-${numberOfStepsCreated}" class="in-browser-test-modal">
+            <div id="step-${numberOfStepsCreated}" class="in-browser-test-modal" style="margin-bottom:0.25rem;">
                 <select class="in-browser-test-modal" style="background:lightgrey;">
                     <option value="click" class="in-browser-test-modal">
                         Click on:</option>

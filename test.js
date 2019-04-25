@@ -2,6 +2,7 @@
 
     let numberOfStepsCreated = 0;
     let currentElement = '';
+    let haveClickEventListener = false;
 
     let baseStyle = 'all: initial; padding: 0.25rem; margin: 0.25rem; display: inline; border-radius: 5px; font-family: avenir, arial, tahoma; ';
     let onHoverStyle = baseStyle + 'background: rgba(0,100,255,1); ';
@@ -150,6 +151,12 @@
         }).mouseout(function() {
             $(this).css("background","lightgrey").css('box-shadow', 'none');
         });
+
+        if (!haveClickEventListener) {
+            document.addEventListener('click', autoFillClickIdentifier, false);
+            document.addEventListener('contextmenu', autoFillClickIdentifier, false);
+            haveClickEventListener = true;
+        }
 	}
 
     function createRunButton(container) {
@@ -178,6 +185,7 @@
         if (typeof autoFillClickIdentifier !== 'undefined') {
             document.removeEventListener('click', autoFillClickIdentifier, false);
             document.removeEventListener('contextmenu', autoFillClickIdentifier, false);
+            haveClickEventListener = false;
         }
         if (typeof onMouseOver !== 'undefined') {
             document.removeEventListener('mouseover', onMouseOver, false);
@@ -228,8 +236,8 @@
     }
 
     document.addEventListener('click', autoFillClickIdentifier, false);
-
     document.addEventListener('contextmenu', autoFillClickIdentifier, false);
+    haveClickEventListener = true;
 
     document.addEventListener('mouseover', function onMouseOver(event) {
         let e = event.target;
@@ -279,6 +287,9 @@
 
     function runSteps() {
         document.removeEventListener('click', autoFillClickIdentifier, false);
+        document.removeEventListener('contextmenu', autoFillClickIdentifier, false);
+        haveClickEventListener = false;
+
         currentElement = '';
         let overallPassed = true;
         let message = '';
@@ -304,25 +315,23 @@
                     message += '\nStep ' + (i+1);
                     if (findElement(currentElement)) {
                         message += ': click on ' + currentElement;
-                        findElement(currentElement).click()
+                        findElement(currentElement).click();
                     } else {
                         message += ' FAILED: could not find ' + currentElement;
                         overallPassed = false;
                         return false;
                     }
                 } else if (action == 'select') {
-                    // TODO: google how to select element
-                    
-                    // currentElement = value;
-                    // message += '\nStep ' + (i+1);
-                    // if (findElement(currentElement)) {
-                    //     message += ': click on ' + currentElement;
-                    //     findElement(currentElement).click()
-                    // } else {
-                    //     message += ' FAILED: could not find ' + currentElement;
-                    //     overallPassed = false;
-                    //     return false;
-                    // }
+                    currentElement = value;
+                    message += '\nStep ' + (i+1);
+                    if (findElement(currentElement)) {
+                        message += ': click on ' + currentElement;
+                        findElement(currentElement).trigger("select");
+                    } else {
+                        message += ' FAILED: could not find ' + currentElement;
+                        overallPassed = false;
+                        return false;
+                    }
                 } else if (action == 'enter') {
                     message += '\nStep ' + (i+1) + ': type in ' + currentElement + ': "' + value + '"';
                     findElement(currentElement).value = value;
@@ -338,11 +347,11 @@
                     }
                 }
                 
-                if (i === done) {
+                if (i === done+1) {
                     message += '\n\nOverall status: ';
                     message += overallPassed ? 'PASSED' : 'FAILED';
                     // TODO: instead of alert(message), just make the steps colour as red-orange #f4bc42 / green-blue #41f4ca
-                    document.addEventListener('click', autoFillClickIdentifier, false);
+                    // document.addEventListener('click', autoFillClickIdentifier, false);
                 }
             }, i*delay); // setTimeout
         }); // each()

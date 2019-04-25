@@ -23,7 +23,7 @@ document.addEventListener('click', function(e) {
 	};
 	chrome.runtime.sendMessage(message); // -> chrome.runtime.onMessage.addListener(...)
 	chrome.storage.local.get('steps', function getSettings(data) {
-		let steps = data.steps;
+		let steps = data.steps || [];
 		steps.push(identifier)
 		chrome.storage.local.set({'steps': steps}, function() {});
 	});

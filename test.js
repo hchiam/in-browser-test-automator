@@ -183,63 +183,6 @@
         }
     }
 
-    function runSteps() {
-        currentElement = '';
-        let overallPassed = true;
-        let message = '';
-        for (let i=0; i<steps.length; i++) {
-            let step = steps[i];
-            
-            // TODO: maybe do goto elsewhere:
-
-//             let go = step.match(/^go (to )?(.+)/);
-//             if (go) {
-//                 let url = go[go.length-1];
-//                 message += '\nStep ' + (i+1) + ': go to ' + url;
-//                 window.location.href = url;
-//                 continue;
-//             }
-            let click = step.match(/^(click|tap) (on )?(.+)/);
-            if (click) {
-                currentElement = click[click.length-1];
-                message += '\nStep ' + (i+1);
-                if (findElement(currentElement)) {
-                    message += ': click on ' + currentElement;
-                    findElement(currentElement).click()
-                } else {
-                    message += ' FAILED: could not find ' + currentElement;
-                    overallPassed = false;
-                    break;
-                }
-                continue;
-            }
-            let type = step.match(/^(type|enter) (in )?(.+)/);
-            if (type) {
-                let value = type[type.length-1];
-                message += '\nStep ' + (i+1) + ': type in ' + currentElement + ': "' + value + '"';
-                findElement(currentElement).value = value;
-                findElement(currentElement).innerHTML = value;
-                continue;
-            }
-            let check = step.match(/^(check|verify)( that (it('| i)s))? (.+)/);
-            if (check) {
-                let expectedValue = check[check.length-1];
-                let actualValue = findElement(currentElement).value || findElement(currentElement).innerHTML;
-                let equals = (actualValue === expectedValue);
-                message += '\nStep ' + (i+1) + ' ';
-                message += equals ? ('PASSED: "' + actualValue + '" is "' + expectedValue + '"') : ('FAILED: "' + actualValue + '" is NOT "' + expectedValue + '"');
-                if (!equals) {
-                    overallPassed = false;
-                    break;
-                }
-                continue;
-            }
-        }
-        message += '\n\nOverall status: ';
-        message += overallPassed ? 'PASSED' : 'FAILED';
-        alert(message);
-    }
-
     function findElement(elementSelector) {
         try {
             return document.querySelector(currentElement);
@@ -325,6 +268,63 @@
             element.style.left = (element.offsetLeft + xChange) + "px";
             element.style.top = (element.offsetTop + yChange) + "px";
         }
+    }
+
+    function runSteps() {
+        currentElement = '';
+        let overallPassed = true;
+        let message = '';
+        for (let i=0; i<steps.length; i++) {
+            let step = steps[i];
+            
+            // TODO: maybe do goto elsewhere:
+
+//             let go = step.match(/^go (to )?(.+)/);
+//             if (go) {
+//                 let url = go[go.length-1];
+//                 message += '\nStep ' + (i+1) + ': go to ' + url;
+//                 window.location.href = url;
+//                 continue;
+//             }
+            let click = step.match(/^(click|tap) (on )?(.+)/);
+            if (click) {
+                currentElement = click[click.length-1];
+                message += '\nStep ' + (i+1);
+                if (findElement(currentElement)) {
+                    message += ': click on ' + currentElement;
+                    findElement(currentElement).click()
+                } else {
+                    message += ' FAILED: could not find ' + currentElement;
+                    overallPassed = false;
+                    break;
+                }
+                continue;
+            }
+            let type = step.match(/^(type|enter) (in )?(.+)/);
+            if (type) {
+                let value = type[type.length-1];
+                message += '\nStep ' + (i+1) + ': type in ' + currentElement + ': "' + value + '"';
+                findElement(currentElement).value = value;
+                findElement(currentElement).innerHTML = value;
+                continue;
+            }
+            let check = step.match(/^(check|verify)( that (it('| i)s))? (.+)/);
+            if (check) {
+                let expectedValue = check[check.length-1];
+                let actualValue = findElement(currentElement).value || findElement(currentElement).innerHTML;
+                let equals = (actualValue === expectedValue);
+                message += '\nStep ' + (i+1) + ' ';
+                message += equals ? ('PASSED: "' + actualValue + '" is "' + expectedValue + '"') : ('FAILED: "' + actualValue + '" is NOT "' + expectedValue + '"');
+                if (!equals) {
+                    overallPassed = false;
+                    break;
+                }
+                continue;
+            }
+        }
+        message += '\n\nOverall status: ';
+        message += overallPassed ? 'PASSED' : 'FAILED';
+        alert(message);
     }
 
 })();

@@ -299,7 +299,7 @@
             let self = this; // so self inside setTimeout points to the right "this"
             setTimeout(function () { // add delay between each action
                 let action = self.value;
-                let value = $(`#steps>#step-${i+1}>input`).val();
+                let value = $(`#steps>div:nth-child(${i+1})>input`).val();
                 
                 // TODO: maybe do goto elsewhere:
 

@@ -101,7 +101,7 @@
                 </select> : 
                 <input placeholder="(Right-click an element to get its identifier.)" 
                     class="in-browser-test-modal" 
-                    style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem; width:50%; ">
+                    style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem; width:50%; text-overflow:ellipsis; ">
                 <button id="remove-step-${numberOfStepsCreated}" 
                     class="in-browser-test-modal"
                     title="Remove step"

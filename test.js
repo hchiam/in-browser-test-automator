@@ -441,7 +441,7 @@
                     message += '\n\nOverall status: ';
                     message += overallPassed ? 'PASSED' : 'FAILED';
                     alert(message)
-                    // TODO: instead of alert(message), just make the steps colour as red-orange #f4bc42 / green-blue #41f4ca
+                    // TODO: instead of alert(message), just make the steps colour as red-orange #f4bc42 / green-blue #41f4ca (for issue #4)
                 }
             }, i*delay); // setTimeout
         }); // each()

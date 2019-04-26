@@ -2,12 +2,12 @@ var numberOfStepsCreated = 0;
 var savedSteps = '';
 
 chrome.storage.local.get('numberOfStepsCreated', function getSettings(data) {
-	numberOfStepsCreated = data.numberOfStepsCreated ? 'var numberOfStepsCreated = ' + numberOfStepsCreated : 
+	numberOfStepsCreated = data.numberOfStepsCreated ? 'var numberOfStepsCreated = ' + numberOfStepsCreated + ';' : 
 		`var numberOfStepsCreated = 0;`;
 });
 
 chrome.storage.local.get('savedSteps', function getSettings(data) {
-	savedSteps = data.savedSteps ? 'var savedSteps = ' + JSON.stringify(data.savedSteps) : 
+	savedSteps = data.savedSteps ? 'var savedSteps = ' + JSON.stringify(data.savedSteps) + ';' : 
 		`var savedSteps = [
 			{
 				'action':'click',

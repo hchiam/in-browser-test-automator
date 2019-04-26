@@ -295,7 +295,8 @@
     haveClickEventListener = true;
 
     document.addEventListener('mouseover', function onMouseOver(event) {
-        if (!document.getElementById('in-browser-test-modal')) {
+        let isModalOpen = document.getElementById('in-browser-test-modal');
+        if (!isModalOpen) {
             return;
         }
         let e = event.target;

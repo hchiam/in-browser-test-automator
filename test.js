@@ -1,6 +1,13 @@
 (function() {
-
-    let numberOfStepsCreated = 0;
+    
+    if (typeof savedSteps === 'undefined') {
+        alert('An error occurred: could not find savedSteps.');
+        return;
+    } else if (typeof numberOfStepsCreated === 'undefined') {
+        alert('An error occurred: could not find savedSteps.');
+        return;
+    }
+    
     let currentElement = '';
     let haveClickEventListener = false;
 
@@ -11,7 +18,7 @@
     removeModal(); // reset
     createModal();
 
-    addStep(); // initialize
+    regenerateSteps(); // initialize
 
     function createModal() {
         let div = document.createElement("div");
@@ -87,10 +94,18 @@
 
 	function addStep() {
         numberOfStepsCreated++;
+
+        savedSteps[numberOfStepsCreated] = {
+            'action':'click',
+            'value':''
+        };
+
+        chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
+        chrome.storage.local.set({'numberOfStepsCreated': numberOfStepsCreated}, function() {});
         
         $('#steps').append(`
             <div id="step-${numberOfStepsCreated}" class="in-browser-test-modal" style="margin-bottom:0.25rem;">
-                <select class="in-browser-test-modal" style="all:initial; background:lightgrey; border:1px solid grey; border-radius:0.5rem; padding:0.1rem 0.75rem; font-family:avenir,arial,tahoma; ">
+                <select id="select-step-${numberOfStepsCreated}" class="in-browser-test-modal" style="all:initial; background:lightgrey; border:1px solid grey; border-radius:0.5rem; padding:0.1rem 0.75rem; font-family:avenir,arial,tahoma; ">
                     <option value="click" class="in-browser-test-modal">
                         Click on:</option>
                     <option value="select" class="in-browser-test-modal">
@@ -100,7 +115,7 @@
                     <option value="check" class="in-browser-test-modal">
                         Should show:</option>
                 </select> : 
-                <input placeholder="(Right-click an element to get its identifier.)" 
+                <input id="input-step-${numberOfStepsCreated}" placeholder="(Right-click an element to get its identifier.)" 
                     class="in-browser-test-modal" 
                     style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem; width:50%; text-overflow:ellipsis; font-family:avenir,arial,tahoma; font-size:16px; ">
                 <button id="remove-step-${numberOfStepsCreated}" 
@@ -110,17 +125,22 @@
             </div>
 		`);
 
-		$('#remove-step-' + numberOfStepsCreated).click(function useSettings(e) {
-			let step = e.target.id.replace(/^remove-step-/,'');
+		$('#remove-step-' + numberOfStepsCreated).click(function useSettings(event) {
+            let step = event.target.id.replace(/^remove-step-/,'');
+            savedSteps[step-1] = null;
+            chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
 			$("#step-" + step).remove();
         })
 
-        $(`#steps>div#step-${numberOfStepsCreated}>select`).change(function(event){
-            let value = $(this).find("option:selected").attr('value');
+        $(`#steps>div#step-${numberOfStepsCreated}>select`).change(function changeAction(event) {
+            let action = $(this).find("option:selected").attr('value');
             let selector = '#steps>div#' + event.target.parentNode.id + '>input';
-            if (value == 'click' || value == 'select') {
+            let step = event.target.id.replace(/^select-step-/,'');
+            savedSteps[step-1].action = action;
+            chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
+            if (action == 'click' || action == 'select') {
                 $(selector).attr('placeholder', '(Right-click an element to get its identifier.)');
-            } else if (value == 'enter' || value == 'check') {
+            } else if (action == 'enter' || action == 'check') {
                 $(selector).val('');
                 $(selector).attr('placeholder', '(Some text.)');
                 $(selector).focus();
@@ -144,6 +164,11 @@
             $(this).css("background","lightgrey").css('box-shadow', '0 3px 3px rgba(0,0,0,0.5)');
         }).mouseout(function() {
             $(this).css("background","white").css('box-shadow', 'none');
+        }).keyup(function(event) {
+            let step = event.target.id.replace(/^input-step-/,'');
+            let value = $('input.in-browser-test-modal#input-step-' + step).val();
+            savedSteps[step-1].value = value;
+            chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
         });
 
         $("#remove-step-" + numberOfStepsCreated).mouseover(function() {
@@ -156,6 +181,97 @@
             document.addEventListener('click', autoFillClickIdentifier, false);
             document.addEventListener('contextmenu', autoFillClickIdentifier, false);
             haveClickEventListener = true;
+        }
+	}
+
+	function regenerateSteps() {
+        for (let i=0; i<savedSteps.length; i++) {
+            let savedStep = savedSteps[i];
+            
+            if (savedStep == null) {
+                continue;
+            }
+
+            $('#steps').append(`
+                <div id="step-${i+1}" class="in-browser-test-modal" style="margin-bottom:0.25rem;">
+                    <select id="select-step-${i+1}" class="in-browser-test-modal" style="all:initial; background:lightgrey; border:1px solid grey; border-radius:0.5rem; padding:0.1rem 0.75rem; font-family:avenir,arial,tahoma; ">
+                        <option value="click" class="in-browser-test-modal" ${(savedStep.action=='click') ? 'selected="selected"' : ''}>
+                            Click on:</option>
+                        <option value="select" class="in-browser-test-modal" ${(savedStep.action=='select') ? 'selected="selected"' : ''}>
+                            Select:</option>
+                        <option value="enter" class="in-browser-test-modal" ${(savedStep.action=='enter') ? 'selected="selected"' : ''}>
+                            Enter:</option>
+                        <option value="check" class="in-browser-test-modal" ${(savedStep.action=='check') ? 'selected="selected"' : ''}>
+                            Should show:</option>
+                    </select> : 
+                    <input id="input-step-${i+1}" placeholder="(Right-click an element to get its identifier.)" 
+                        class="in-browser-test-modal" 
+                        style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem; width:50%; text-overflow:ellipsis; font-family:avenir,arial,tahoma; font-size:16px; "
+                        value="${savedStep.value}">
+                    <button id="remove-step-${i+1}" 
+                        class="in-browser-test-modal"
+                        title="Remove step"
+                        style="all:initial; background:lightgrey; width:2rem; height:2rem; border-radius:1rem; text-align:center;font-family:avenir,arial,tahoma; ">-</button>
+                </div>
+            `);
+
+            $('#remove-step-' + (i+1)).click(function useSettings(event) {
+                let step = event.target.id.replace(/^remove-step-/,'');
+                savedSteps[step-1] = null;
+                chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
+                $("#step-" + step).remove();
+            })
+
+            $(`#steps>div#step-${(i+1)}>select`).change(function changeAction(event) {
+                let action = $(this).find("option:selected").attr('value');
+                let selector = '#steps>div#' + event.target.parentNode.id + '>input';
+                let step = event.target.id.replace(/^select-step-/,'');
+                savedSteps[step-1].action = action;
+                chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
+                if (action == 'click' || action == 'select') {
+                    $(selector).attr('placeholder', '(Right-click an element to get its identifier.)');
+                } else if (action == 'enter' || action == 'check') {
+                    $(selector).val('');
+                    $(selector).attr('placeholder', '(Some text.)');
+                    $(selector).focus();
+                } else {
+                    $(selector).val('');
+                    $(selector).attr('placeholder', '');
+                }
+            });
+
+            $("select.in-browser-test-modal, input.in-browser-test-modal").focus(function() {
+                $(this).css("outline","none");
+            });
+
+            $("select.in-browser-test-modal").mouseover(function() {
+                $(this).css("background","grey").css('box-shadow', '0 3px 3px rgba(0,0,0,0.5)');
+            }).mouseout(function() {
+                $(this).css("background","lightgrey").css('box-shadow', 'none');
+            });
+
+            $("input.in-browser-test-modal").mouseover(function() {
+                $(this).css("background","lightgrey").css('box-shadow', '0 3px 3px rgba(0,0,0,0.5)');
+            }).mouseout(function() {
+                $(this).css("background","white").css('box-shadow', 'none');
+            }).keyup(function(event) {
+                let step = event.target.id.replace(/^input-step-/,'');
+                let value = $('input.in-browser-test-modal#input-step-' + step).val();
+                savedSteps[step-1].value = value;
+                chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
+            });
+
+            $("#remove-step-" + (i+1)).mouseover(function() {
+                $(this).css("background","grey").css('box-shadow', '0 3px 3px rgba(0,0,0,0.5)');
+            }).mouseout(function() {
+                $(this).css("background","lightgrey").css('box-shadow', 'none');
+            });
+
+            if (!haveClickEventListener) {
+                document.addEventListener('click', autoFillClickIdentifier, false);
+                document.addEventListener('contextmenu', autoFillClickIdentifier, false);
+                haveClickEventListener = true;
+            }
         }
 	}
 

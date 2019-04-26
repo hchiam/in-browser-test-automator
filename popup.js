@@ -1,22 +1,23 @@
 var savedSteps = '';
-chrome.storage.local.get('savedSteps', function getSettings(data) {
-	savedSteps = data.savedSteps ? 'var savedSteps = ' + JSON.stringify(data.savedSteps) + ';' : 
-		`var savedSteps = [
-			{
-				'action':'click',
-				'value':''
-			}
-		];`;
-});
-
-var numberOfStepsCreated = 0;
-chrome.storage.local.get('numberOfStepsCreated', function getSettings(data) {
-	numberOfStepsCreated++;
-	numberOfStepsCreated = data.numberOfStepsCreated ? 'var numberOfStepsCreated = ' + numberOfStepsCreated + ';' : 
-		`var numberOfStepsCreated = 1;`;
-});
-
+var numberOfStepsCreated = 1;
 let runButton = document.getElementById('start-button');
+
+chrome.storage.local.get('savedSteps', function getSettings(data) {
+	if (data.savedSteps && data.savedSteps.length > 0) {
+		savedSteps = `var savedSteps = ${JSON.stringify(data.savedSteps)};`;
+		numberOfStepsCreated = `var numberOfStepsCreated = ${data.savedSteps.length};`;
+	} else {
+		savedSteps = `
+			var savedSteps = [
+				{
+					'action':'click',
+					'value':''
+				}
+			];`
+		numberOfStepsCreated = 'var numberOfStepsCreated = 1;';
+	}
+});
+
 runButton.addEventListener('click', function() {
 	chrome.tabs.executeScript(null, {file: 'jquery.min.js'});
 	chrome.tabs.executeScript(null, {file: 'jquery-ui.min.js'});

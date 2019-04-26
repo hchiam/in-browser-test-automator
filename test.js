@@ -53,9 +53,19 @@
             $(this).css("background","rgba(0,100,255,0.5)").css('box-shadow', 'none');
         });
 
-        $('#add-step').click(function useSettings() {
+        $('#add-step').click(debounce(function useSettings() {
             addStep();
-        })
+        }, 250));
+    }
+
+    function debounce(callback, milliseconds){
+        let timer; 
+        return function(){
+            clearTimeout(timer); 
+            timer = setTimeout(function(){
+                callback(); 
+            }, milliseconds); 
+        };
     }
 
     function createCloseButton(container) {
@@ -190,8 +200,8 @@
 
 	function addStep() {
         numberOfStepsCreated++;
-
-        savedSteps[numberOfStepsCreated] = {
+        
+        savedSteps[numberOfStepsCreated-1] = {
             'action':'click',
             'value':''
         };
@@ -269,6 +279,8 @@
             let inputFound = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
             if (useValue && inputFound) {
                 inputFound.value = identifier;
+                savedSteps[numberOfStepsCreated-1].value = identifier;
+                chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
             }
             
             // prevent click from triggering button action (and prevent event propagation):

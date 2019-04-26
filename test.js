@@ -123,7 +123,7 @@
                 </select> : 
                 <input id="input-step-${stepNumber}" placeholder="(Right-click an element to get its identifier.)" 
                     class="in-browser-test-modal" 
-                    style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem; width:50%; text-overflow:ellipsis; font-family:avenir,arial,tahoma; font-size:16px; "
+                    style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem; width:50%; text-overflow:ellipsis; font-family:avenir,arial,tahoma; font-size:16px; caret-color:red; "
                     value="${savedStep.value}">
                 <button id="remove-step-${stepNumber}" 
                     class="in-browser-test-modal"
@@ -245,8 +245,21 @@
         }
     }
 
+    function isIdentifierUnique(identifier) {
+        return (typeof document.querySelectorAll(identifier)[1]) === 'undefined'; // index 1 should not exist
+    }
+
     function getIdentifier(event) {
         let e = event.target;
+        let tag = (e.tagName) ? e.tagName.trim().toLowerCase() : '';
+        let id = (e.id) ? '#' + e.id.trim() : '';
+        let classes = (e.className) ? '.' + e.className.trim().replace(/ /g,'.') : '';
+        let identifier = tag + id + classes;
+        return identifier;
+    }
+
+    function getParentIdentifier(event) {
+        let e = event.target.parentElement;
         let tag = (e.tagName) ? e.tagName.trim().toLowerCase() : '';
         let id = (e.id) ? '#' + e.id.trim() : '';
         let classes = (e.className) ? '.' + e.className.trim().replace(/ /g,'.') : '';
@@ -266,12 +279,25 @@
         let isInModal = classes.includes('in-browser-test-modal') || getIdentifierBeforeClicked().includes('in-browser-test-modal');
         if (!isInModal) {
             let identifier = getIdentifierBeforeClicked(); // not getIdentifier(event);
-            let selectFound = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>select`);
-            let useValue = (selectFound.value == 'click') || (selectFound.value == 'select');
-            let inputFound = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
-            if (useValue && inputFound) {
-                inputFound.value = identifier;
+            let selectedAction = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>select`);
+            let shouldUseValue = (selectedAction.value == 'click') || (selectedAction.value == 'select');
+            let actionInput = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
+            let isUnique = isIdentifierUnique(identifier);
+            if (shouldUseValue && actionInput && isUnique) {
+                actionInput.value = identifier;
                 savedSteps[numberOfStepsCreated-1].value = identifier;
+                chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
+            } else if (!isUnique) {
+                let parentIdentifier = getParentIdentifier(event);
+                let identifierWithParentPrepended = parentIdentifier + '>' + identifier;
+                let doesPrependingParentHelp = isIdentifierUnique(identifierWithParentPrepended);
+                if (!doesPrependingParentHelp) {
+                    alert("I couldn't uniquely identify that element. \nPlease edit the identifier.");
+                    $(`#steps>div#step-${numberOfStepsCreated}>input`).focus();
+                }
+                // show identifier either way
+                actionInput.value = identifierWithParentPrepended;
+                savedSteps[numberOfStepsCreated-1].value = identifierWithParentPrepended;
                 chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
             }
             

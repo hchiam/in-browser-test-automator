@@ -181,6 +181,13 @@
         }
     }
 
+	function regenerateSteps() {
+        for (let i=0; i<savedSteps.length; i++) {
+            let stepNumber = i+1;
+            createStep(stepNumber);
+        }
+	}
+
 	function addStep() {
         numberOfStepsCreated++;
 
@@ -193,13 +200,6 @@
         chrome.storage.local.set({'numberOfStepsCreated': numberOfStepsCreated}, function() {});
         
         createStep(numberOfStepsCreated);
-	}
-
-	function regenerateSteps() {
-        for (let i=0; i<savedSteps.length; i++) {
-            let stepNumber = i+1;
-            createStep(stepNumber);
-        }
 	}
 
     function createRunButton(container) {

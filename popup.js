@@ -3,6 +3,7 @@ var savedSteps = '';
 let runButton = document.getElementById('start-button');
 
 chrome.storage.local.get('savedSteps', function getSettings(data) {
+	// TODO: clean up nulls and then update numberOfStepsCreated
 	let hasSteps = data.savedSteps && data.savedSteps.length > 0;
 	let hasValidSteps = data.savedSteps && data.savedSteps.find(s => s);
 	let hasLastStepFilled = data.savedSteps && data.savedSteps.slice().reverse().find(s => s && s.value !== '');

@@ -1,12 +1,13 @@
-var savedSteps = '';
 var numberOfStepsCreated = 1;
+var savedSteps = '';
 let runButton = document.getElementById('start-button');
 
 chrome.storage.local.get('savedSteps', function getSettings(data) {
-	if (data.savedSteps && data.savedSteps.length > 0) {
-		savedSteps = `var savedSteps = ${JSON.stringify(data.savedSteps)};`;
-		numberOfStepsCreated = `var numberOfStepsCreated = ${data.savedSteps.length};`;
-	} else {
+	let hasSteps = data.savedSteps && data.savedSteps.length > 0;
+	let hasValidSteps = data.savedSteps && data.savedSteps.find(s => s);
+	let hasLastStepFilled = data.savedSteps && data.savedSteps.slice().reverse().find(s => s && s.value !== '');
+	if (!hasSteps || !hasValidSteps) {
+		numberOfStepsCreated = 'var numberOfStepsCreated = 1;';
 		savedSteps = `
 			var savedSteps = [
 				{
@@ -14,7 +15,18 @@ chrome.storage.local.get('savedSteps', function getSettings(data) {
 					'value':''
 				}
 			];`
-		numberOfStepsCreated = 'var numberOfStepsCreated = 1;';
+	} else if (hasLastStepFilled) {
+		data.savedSteps.push(
+			{
+				'action':'click',
+				'value':''
+			}
+		);
+		numberOfStepsCreated = `var numberOfStepsCreated = ${data.savedSteps.length};`;
+		savedSteps = `var savedSteps = ${JSON.stringify(data.savedSteps)};`;
+	} else {
+		numberOfStepsCreated = `var numberOfStepsCreated = ${data.savedSteps.length};`;
+		savedSteps = `var savedSteps = ${JSON.stringify(data.savedSteps)};`;
 	}
 });
 

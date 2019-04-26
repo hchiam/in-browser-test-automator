@@ -120,6 +120,9 @@
                         Enter:</option>
                     <option value="check" class="in-browser-test-modal" ${(savedStep.action=='check') ? 'selected="selected"' : ''}>
                         Should show:</option>
+                    ${''/* TODO: may need background script (for issue #5)
+                    <option value="goto" class="in-browser-test-modal" ${(savedStep.action=='goto') ? 'selected="selected"' : ''}>
+                        Go to URL:</option>*/}
                 </select> : 
                 <input id="input-step-${stepNumber}" placeholder="(Right-click an element to get its identifier.)" 
                     class="in-browser-test-modal" 
@@ -151,6 +154,11 @@
                 $(selector).val('');
                 $(selector).attr('placeholder', '(Some text.)');
                 $(selector).focus();
+            // // TODO: may need background script (for issue #5)
+            // } else if (action == 'goto') {
+            //     $(selector).val('');
+            //     $(selector).attr('placeholder', '(Enter a link like https://www.google.com/)');
+            //     $(selector).focus();
             } else {
                 $(selector).val('');
                 $(selector).attr('placeholder', '');
@@ -385,16 +393,6 @@
             setTimeout(function () { // add delay between each action
                 let action = self.value;
                 let value = $(`#steps>div:nth-child(${i+1})>input`).val();
-                
-                // TODO: maybe do goto elsewhere:
-
-    //             let go = step.match(/^go (to )?(.+)/);
-    //             if (go) {
-    //                 let url = go[go.length-1];
-    //                 message += '\nStep ' + (i+1) + ': go to ' + url;
-    //                 window.location.href = url;
-    //                 continue;
-    //             }
                 if (action == 'click' && value !== '') {
                     currentElement = value;
                     message += '\nStep ' + (i+1);
@@ -430,6 +428,12 @@
                         overallPassed = false;
                         return false;
                     }
+                // // TODO: may need background script (for issue #5)
+                // } else if (action == 'goto') {
+                //     message += '\nStep ' + (i+1) + ': go to URL ' + currentElement + ': "' + value + '"';
+                //     let url = value;
+                //     window.location.href = url;
+                //     alert('hi')
                 }
                 
                 let finishedLastStep = (i === numberOfStepsToRun-1);

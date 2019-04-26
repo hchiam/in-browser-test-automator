@@ -92,13 +92,13 @@
         h1.id = 'in-browser-test-modal-pointer-preview-h1';
         h1.className = 'in-browser-test-modal';
         h1.innerHTML = 'Your pointer is hovering over: ';
-        h1.style.cssText = 'all:initial; font-family:avenir,arial,tahoma; font-weight:bold; color:grey; text-align:center; ';
+        h1.style.cssText = 'all:initial; font-family:avenir,arial,tahoma; font-weight:bold; color:grey; text-align:center; background:white; padding:0.5rem; border-radius:0.5rem; ';
         container.appendChild(h1);
         let div = document.createElement("div");
         div.id = 'in-browser-test-modal-pointer-preview';
         div.className = 'in-browser-test-modal';
         div.innerHTML = '-';
-        div.style.cssText = 'color:grey; background:white; text-align:center; min-height:3rem; ';
+        div.style.cssText = 'color:grey; background:white; text-align:center; min-height:3rem; border-radius:0.5rem; ';
         container.appendChild(div);
     }
 

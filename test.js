@@ -245,14 +245,6 @@
         }
     }
 
-    function findElement(elementSelector) {
-        try {
-            return document.querySelector(elementSelector);
-        } catch {
-            return null;
-        }
-    }
-
     function getIdentifier(event) {
         let e = event.target;
         let tag = (e.tagName) ? e.tagName.trim().toLowerCase() : '';
@@ -341,6 +333,14 @@
             y = e.clientY;
             element.style.left = (element.offsetLeft + xChange) + "px";
             element.style.top = (element.offsetTop + yChange) + "px";
+        }
+    }
+
+    function findElement(elementSelector) {
+        try {
+            return document.querySelector(elementSelector);
+        } catch {
+            return null;
         }
     }
 

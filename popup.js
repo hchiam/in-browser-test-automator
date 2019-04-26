@@ -1,5 +1,5 @@
-var numberOfStepsCreated = 1;
-var savedSteps = '';
+var numberOfStepsCreated_init = 1;
+var savedSteps_init = '';
 let runButton = document.getElementById('start-button');
 
 chrome.storage.local.get('savedSteps', function getSettings(data) {
@@ -8,8 +8,8 @@ chrome.storage.local.get('savedSteps', function getSettings(data) {
 	let hasValidSteps = data.savedSteps && data.savedSteps.find(s => s);
 	let hasLastStepFilled = data.savedSteps && data.savedSteps.slice().reverse().find(s => s && s.value !== '');
 	if (!hasSteps || !hasValidSteps) {
-		numberOfStepsCreated = 'var numberOfStepsCreated = 1;';
-		savedSteps = `
+		numberOfStepsCreated_init = 'var numberOfStepsCreated = 1;';
+		savedSteps_init = `
 			var savedSteps = [
 				{
 					'action':'click',
@@ -23,11 +23,11 @@ chrome.storage.local.get('savedSteps', function getSettings(data) {
 				'value':''
 			}
 		);
-		numberOfStepsCreated = `var numberOfStepsCreated = ${data.savedSteps.length};`;
-		savedSteps = `var savedSteps = ${JSON.stringify(data.savedSteps)};`;
+		numberOfStepsCreated_init = `var numberOfStepsCreated = ${data.savedSteps.length};`;
+		savedSteps_init = `var savedSteps = ${JSON.stringify(data.savedSteps)};`;
 	} else {
-		numberOfStepsCreated = `var numberOfStepsCreated = ${data.savedSteps.length};`;
-		savedSteps = `var savedSteps = ${JSON.stringify(data.savedSteps)};`;
+		numberOfStepsCreated_init = `var numberOfStepsCreated = ${data.savedSteps.length};`;
+		savedSteps_init = `var savedSteps = ${JSON.stringify(data.savedSteps)};`;
 	}
 });
 
@@ -35,7 +35,7 @@ runButton.addEventListener('click', function() {
 	chrome.tabs.executeScript(null, {file: 'jquery.min.js'});
 	chrome.tabs.executeScript(null, {file: 'jquery-ui.min.js'});
 	chrome.tabs.executeScript(null, {
-		code: numberOfStepsCreated + savedSteps
+		code: numberOfStepsCreated_init + savedSteps_init
 	}, function(){
 		chrome.tabs.executeScript(null, {file: 'test.js'});
 		window.close();

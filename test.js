@@ -14,7 +14,7 @@
     let baseStyle = 'all:initial; padding:0.25rem; margin:0.25rem; display:inline; border-radius:5px; font-family:avenir,arial,tahoma; ';
     let onHoverStyle = baseStyle + 'background:rgba(0,100,255,1); ';
     let offHoverStyle = baseStyle + 'background:rgba(0,100,255,0.5); ';
-
+    
     removeModal(); // reset
     createModal();
 
@@ -207,15 +207,15 @@
         button.id = 'in-browser-test-modal-run';
         button.className = 'in-browser-test-modal';
         button.innerHTML = '&#9658; Run the following steps:';
-        button.style.cssText = 'all:initial; left:1rem; background:rgba(0,100,255,0.5); padding:0.25rem; margin:0.25rem; display:inline; border-radius:5px; font-family:avenir,arial,tahoma; ';
+        button.style.cssText = 'all:initial; background:rgba(0,100,255,0.5); padding:0.25rem; margin:0.25rem; display:inline; border-radius:5px; font-family:avenir,arial,tahoma; ';
         button.onclick = function() {
             runSteps();
         };
         button.onmouseover = function() {
-            button.style.cssText = onHoverStyle + 'left:1rem; margin:0.5rem; margin-top:2rem; box-shadow:0 3px 3px rgba(0,0,0,0.5); ';
+            button.style.cssText = onHoverStyle + 'box-shadow:0 3px 3px rgba(0,0,0,0.5); ';
         };
         button.onmouseout = function() {
-            button.style.cssText = offHoverStyle + 'left:1rem; margin:0.5rem; margin-top:2rem; box-shadow:none; ';
+            button.style.cssText = offHoverStyle + 'box-shadow:none; ';
         };
         container.appendChild(button);
     }
@@ -283,6 +283,9 @@
     haveClickEventListener = true;
 
     document.addEventListener('mouseover', function onMouseOver(event) {
+        if (!document.getElementById('in-browser-test-modal')) {
+            return;
+        }
         let e = event.target;
         let classes = (e.className) ? '.' + e.className.trim().replace(/ /g,'.') : '';
         let isInModal = classes.includes('in-browser-test-modal');

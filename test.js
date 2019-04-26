@@ -379,7 +379,7 @@
         let overallPassed = true;
         let message = '';
         let delay = 1000;
-        let done = $("element").length;
+        let numberOfStepsToRun = $("#steps").find('select').length;
         $('#steps').find('select').each(function (i) {
             let self = this; // so self inside setTimeout points to the right "this"
             setTimeout(function () { // add delay between each action
@@ -395,7 +395,7 @@
     //                 window.location.href = url;
     //                 continue;
     //             }
-                if (action == 'click') {
+                if (action == 'click' && value !== '') {
                     currentElement = value;
                     message += '\nStep ' + (i+1);
                     if (findElement(currentElement)) {
@@ -432,9 +432,11 @@
                     }
                 }
                 
-                if (i === done+1) {
+                let finishedLastStep = (i === numberOfStepsToRun-1);
+                if (finishedLastStep) {
                     message += '\n\nOverall status: ';
                     message += overallPassed ? 'PASSED' : 'FAILED';
+                    alert(message)
                     // TODO: instead of alert(message), just make the steps colour as red-orange #f4bc42 / green-blue #41f4ca
                 }
             }, i*delay); // setTimeout

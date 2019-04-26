@@ -15,7 +15,7 @@
 
     function createModal() {
         let div = document.createElement("div");
-        div.style.cssText = 'all:initial; position:fixed; left:25%; top:25vh; width:50%; height:50%; padding:1rem; z-index:9999; border:1rem solid rgba(0,100,255,0.5); background:rgba(255,255,255,0.75); color:black; overflow-y:auto; border-radius:5px; font-family:avenir,arial,tahoma; box-shadow:inset 0 -50px 50px -55px rgba(0, 0, 0, 1);';
+        div.style.cssText = 'all:initial; position:fixed; left:25%; top:25vh; width:50%; height:50%; padding:1rem; z-index:9999; border:1rem solid rgba(0,100,255,0.5); background:rgba(255,255,255,0.75); color:black; overflow-y:auto; border-radius:5px; font-family:avenir,arial,tahoma; box-shadow:inset 0 -50px 50px -55px rgba(0, 0, 0, 1); font-size:16px; ';
         div.id = 'in-browser-test-modal';
         div.className = 'in-browser-test-modal';
         makeElementDraggable(div);
@@ -90,7 +90,7 @@
         
         $('#steps').append(`
             <div id="step-${numberOfStepsCreated}" class="in-browser-test-modal" style="margin-bottom:0.25rem;">
-                <select class="in-browser-test-modal" style="background:lightgrey;">
+                <select class="in-browser-test-modal" style="all:initial; background:lightgrey; border:1px solid grey; border-radius:0.5rem; padding:0.1rem 0.75rem; font-family:avenir,arial,tahoma; ">
                     <option value="click" class="in-browser-test-modal">
                         Click on:</option>
                     <option value="select" class="in-browser-test-modal">
@@ -102,11 +102,11 @@
                 </select> : 
                 <input placeholder="(Right-click an element to get its identifier.)" 
                     class="in-browser-test-modal" 
-                    style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem; width:50%; text-overflow:ellipsis; ">
+                    style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem; width:50%; text-overflow:ellipsis; font-family:avenir,arial,tahoma; font-size:16px; ">
                 <button id="remove-step-${numberOfStepsCreated}" 
                     class="in-browser-test-modal"
                     title="Remove step"
-                    style="all:initial; background:lightgrey; width:2rem; height:2rem; border-radius:1rem; text-align:center;">-</button>
+                    style="all:initial; background:lightgrey; width:2rem; height:2rem; border-radius:1rem; text-align:center;font-family:avenir,arial,tahoma; ">-</button>
             </div>
 		`);
 

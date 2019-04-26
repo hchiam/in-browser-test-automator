@@ -17,17 +17,19 @@ chrome.storage.local.get('savedSteps', function getSettings(data) {
 				}
 			];`
 	} else if (hasLastStepFilled) {
-		data.savedSteps.push(
+		let savedSteps = cleanUpNullSteps(data.savedSteps);
+		savedSteps.push(
 			{
 				'action':'click',
 				'value':''
 			}
 		);
-		numberOfStepsCreated_init = `var numberOfStepsCreated = ${data.savedSteps.length};`;
-		savedSteps_init = `var savedSteps = ${JSON.stringify(data.savedSteps)};`;
+		numberOfStepsCreated_init = `var numberOfStepsCreated = ${savedSteps.length};`;
+		savedSteps_init = `var savedSteps = ${JSON.stringify(savedSteps)};`;
 	} else {
-		numberOfStepsCreated_init = `var numberOfStepsCreated = ${data.savedSteps.length};`;
-		savedSteps_init = `var savedSteps = ${JSON.stringify(data.savedSteps)};`;
+		let savedSteps = cleanUpNullSteps(data.savedSteps);
+		numberOfStepsCreated_init = `var numberOfStepsCreated = ${savedSteps.length};`;
+		savedSteps_init = `var savedSteps = ${JSON.stringify(savedSteps)};`;
 	}
 });
 
@@ -41,3 +43,7 @@ runButton.addEventListener('click', function() {
 		window.close();
 	});
 });
+
+function cleanUpNullSteps(steps) {
+	return steps.filter(s => s !== null);
+}

@@ -44,7 +44,7 @@
             <button id="add-step" 
                 class="in-browser-test-modal"
                 title="Add step"
-                style="all:initial; background:rgba(0,100,255,0.5); width:2rem; height:2rem; border-radius:1rem; text-align:center; margin-top:0.5rem; ">+</button>
+                style="all:initial; background:rgba(0,100,255,0.5); width:2rem; height:2rem; border-radius:1rem; text-align:center; margin-top:0.5rem; font-family:avenir,arial,tahoma; ">+</button>
         `);
 
         $("#add-step").mouseover(function() {

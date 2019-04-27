@@ -9,7 +9,7 @@
     }
     
     let currentElement = '';
-    let haveClickEventListener = false;
+    let haveEventListeners = false;
 
     let baseStyle = 'all:initial; padding:0.25rem; margin:0.25rem; display:inline; border-radius:5px; font-family:avenir,arial,tahoma; ';
     let onHoverStyle = baseStyle + 'background:rgba(0,100,255,1); ';
@@ -192,10 +192,11 @@
             $(this).css("background","lightgrey").css('box-shadow', 'none');
         });
 
-        if (!haveClickEventListener) {
+        if (!haveEventListeners) {
             document.addEventListener('click', autoFillClickIdentifier, false);
             document.addEventListener('contextmenu', autoFillClickIdentifier, false);
-            haveClickEventListener = true;
+            document.addEventListener('mouseover', pointerPreviewOnMouseOver, false);
+            haveEventListeners = true;
         }
     }
 
@@ -246,7 +247,8 @@
         if (typeof autoFillClickIdentifier !== 'undefined') {
             document.removeEventListener('click', autoFillClickIdentifier, false);
             document.removeEventListener('contextmenu', autoFillClickIdentifier, false);
-            haveClickEventListener = false;
+            document.removeEventListener('mouseover', pointerPreviewOnMouseOver, false);
+            haveEventListeners = false;
         }
         if (typeof onMouseOver !== 'undefined') {
             document.removeEventListener('mouseover', onMouseOver, false);
@@ -318,9 +320,10 @@
 
     document.addEventListener('click', autoFillClickIdentifier, false);
     document.addEventListener('contextmenu', autoFillClickIdentifier, false);
-    haveClickEventListener = true;
+    document.addEventListener('mouseover', pointerPreviewOnMouseOver, false);
+    haveEventListeners = true;
 
-    document.addEventListener('mouseover', function onMouseOver(event) {
+    function pointerPreviewOnMouseOver(event) {
         let isModalOpen = document.getElementById('in-browser-test-modal');
         if (!isModalOpen) {
             return;
@@ -332,7 +335,7 @@
             let identifier = getIdentifier(event);
             document.getElementById('in-browser-test-modal-pointer-preview').innerHTML = identifier;
         }
-    }, false);
+    }
 
     function makeElementDraggable(element) {
         let xChange = 0;
@@ -381,7 +384,8 @@
     function runSteps() {
         document.removeEventListener('click', autoFillClickIdentifier, false);
         document.removeEventListener('contextmenu', autoFillClickIdentifier, false);
-        haveClickEventListener = false;
+        document.removeEventListener('mouseover', pointerPreviewOnMouseOver, false);
+        haveEventListeners = false;
 
         currentElement = '';
         let overallPassed = true;

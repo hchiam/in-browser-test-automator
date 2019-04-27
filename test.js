@@ -196,6 +196,7 @@
             document.addEventListener('click', autoFillClickIdentifier, false);
             document.addEventListener('contextmenu', autoFillClickIdentifier, false);
             document.addEventListener('mouseover', pointerPreviewOnMouseOver, false);
+            document.addEventListener('keydown', autoFillEnterValue, false);
             haveEventListeners = true;
         }
     }
@@ -248,6 +249,7 @@
             document.removeEventListener('click', autoFillClickIdentifier, false);
             document.removeEventListener('contextmenu', autoFillClickIdentifier, false);
             document.removeEventListener('mouseover', pointerPreviewOnMouseOver, false);
+            document.removeEventListener('keydown', autoFillEnterValue, false);
             haveEventListeners = false;
         }
         if (typeof onMouseOver !== 'undefined') {
@@ -332,9 +334,16 @@
         }
     }
 
+    function autoFillEnterValue(event) {
+        // TODO
+        let keyCode = (event.keyCode || event.which);
+        console.log('Maybe can input Enter key: \n' + keyCode + ' = ' + String.fromCharCode(keyCode));
+    }
+
     document.addEventListener('click', autoFillClickIdentifier, false);
     document.addEventListener('contextmenu', autoFillClickIdentifier, false);
     document.addEventListener('mouseover', pointerPreviewOnMouseOver, false);
+    document.addEventListener('keydown', autoFillEnterValue, false);
     haveEventListeners = true;
 
     function makeElementDraggable(element) {
@@ -385,6 +394,7 @@
         document.removeEventListener('click', autoFillClickIdentifier, false);
         document.removeEventListener('contextmenu', autoFillClickIdentifier, false);
         document.removeEventListener('mouseover', pointerPreviewOnMouseOver, false);
+        document.removeEventListener('keydown', autoFillEnterValue, false);
         haveEventListeners = false;
 
         currentElement = '';

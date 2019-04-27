@@ -318,11 +318,6 @@
         }
     }
 
-    document.addEventListener('click', autoFillClickIdentifier, false);
-    document.addEventListener('contextmenu', autoFillClickIdentifier, false);
-    document.addEventListener('mouseover', pointerPreviewOnMouseOver, false);
-    haveEventListeners = true;
-
     function pointerPreviewOnMouseOver(event) {
         let isModalOpen = document.getElementById('in-browser-test-modal');
         if (!isModalOpen) {
@@ -336,6 +331,11 @@
             document.getElementById('in-browser-test-modal-pointer-preview').innerHTML = identifier;
         }
     }
+
+    document.addEventListener('click', autoFillClickIdentifier, false);
+    document.addEventListener('contextmenu', autoFillClickIdentifier, false);
+    document.addEventListener('mouseover', pointerPreviewOnMouseOver, false);
+    haveEventListeners = true;
 
     function makeElementDraggable(element) {
         let xChange = 0;

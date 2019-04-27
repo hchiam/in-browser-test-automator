@@ -389,6 +389,9 @@
         let delay = 1000;
         let numberOfStepsToRun = $("#steps").find('select').length;
         $('#steps').find('select').each(function (i) {
+            if (!overallPassed) {
+                return;
+            }
             let self = this; // so self inside setTimeout points to the right "this"
             setTimeout(function () { // add delay between each action
                 let action = self.value;

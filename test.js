@@ -300,7 +300,7 @@
                 let identifierWithParentPrepended = parentIdentifier + '>' + identifier;
                 let doesPrependingParentHelp = isIdentifierUnique(identifierWithParentPrepended);
                 if (!doesPrependingParentHelp) {
-                    alert("I couldn't uniquely identify that element. \nPlease edit the identifier.");
+                    alert("Couldn't uniquely identify that element. \n\nTry a different part of the element? \nTry editing the identifier?");
                     $(`#steps>div#step-${numberOfStepsCreated}>input`).focus();
                 }
                 // show identifier either way

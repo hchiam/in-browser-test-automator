@@ -205,7 +205,7 @@
             document.addEventListener('click', autoFillClickIdentifier, false);
             document.addEventListener('contextmenu', autoFillClickIdentifier, false);
             document.addEventListener('mouseover', pointerPreviewOnMouseOver, false);
-            document.addEventListener('keydown', autoFillEnterValue, false);
+            document.addEventListener('keyup', autoFillEnterValue, false);
             haveEventListeners = true;
         }
     }
@@ -258,7 +258,7 @@
             document.removeEventListener('click', autoFillClickIdentifier, false);
             document.removeEventListener('contextmenu', autoFillClickIdentifier, false);
             document.removeEventListener('mouseover', pointerPreviewOnMouseOver, false);
-            document.removeEventListener('keydown', autoFillEnterValue, false);
+            document.removeEventListener('keyup', autoFillEnterValue, false);
             haveEventListeners = false;
         }
         if (typeof onMouseOver !== 'undefined') {
@@ -317,8 +317,9 @@
                     $(`#steps>div#step-${numberOfStepsCreated}>input`).focus();
                 }
                 // show identifier either way
-                actionInput.value = identifierWithParentPrepended;
-                savedSteps[numberOfStepsCreated-1].value = identifierWithParentPrepended;
+                identifier = identifierWithParentPrepended;
+                actionInput.value = identifier;
+                savedSteps[numberOfStepsCreated-1].value = identifier;
                 chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
             }
             
@@ -335,7 +336,7 @@
             return;
         }
         let e = event.target;
-        let classes = (e.className) ? '.' + e.className.trim().replace(/ /g,'.') : '';
+        let classes = (e.className && e.className !== '') ? '.' + e.className.trim().replace(/ /g,'.') : '';
         let isInModal = classes.includes('in-browser-test-modal');
         if (!isInModal) {
             let identifier = getIdentifier(event);
@@ -344,15 +345,21 @@
     }
 
     function autoFillEnterValue(event) {
-        // TODO
         let keyCode = (event.keyCode || event.which);
-        console.log('Maybe can input Enter key: \n' + keyCode + ' = ' + String.fromCharCode(keyCode));
+        let char = String.fromCharCode(keyCode);
+        if (keyCode == 13) {
+            console.log('hit-enter'); // TODO: use for issue #3
+        } else {
+            // TODO: use for issue #3
+            currentText = findElement(currentElement).value || findElement(currentElement).innerHTML;
+        }
+        console.log('currentText = ' + currentText); // TODO: use for issue #3
     }
 
     document.addEventListener('click', autoFillClickIdentifier, false);
     document.addEventListener('contextmenu', autoFillClickIdentifier, false);
     document.addEventListener('mouseover', pointerPreviewOnMouseOver, false);
-    document.addEventListener('keydown', autoFillEnterValue, false);
+    document.addEventListener('keyup', autoFillEnterValue, false);
     haveEventListeners = true;
 
     function makeElementDraggable(element) {
@@ -403,7 +410,7 @@
         document.removeEventListener('click', autoFillClickIdentifier, false);
         document.removeEventListener('contextmenu', autoFillClickIdentifier, false);
         document.removeEventListener('mouseover', pointerPreviewOnMouseOver, false);
-        document.removeEventListener('keydown', autoFillEnterValue, false);
+        document.removeEventListener('keyup', autoFillEnterValue, false);
         haveEventListeners = false;
 
         currentElement = '';

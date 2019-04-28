@@ -92,7 +92,7 @@
         h1.id = 'in-browser-test-modal-pointer-preview-h1';
         h1.className = 'in-browser-test-modal';
         h1.innerHTML = 'Your pointer is hovering over: ';
-        h1.style.cssText = 'all:initial; font-family:avenir,arial,tahoma; font-weight:bold; color:grey; text-align:center; background:white; padding:0 0.5rem; border-radius:0.5rem; ';
+        h1.style.cssText = 'all:initial; font-family:avenir,arial,tahoma; font-weight:bold; color:grey; text-align:center; background:white; padding:0.5rem 0.5rem 0.75rem; border-radius:0.5rem; transition:0.5s; ';
         container.appendChild(h1);
         let div = document.createElement("div");
         div.id = 'in-browser-test-modal-pointer-preview';
@@ -346,11 +346,14 @@
             let isUnique = isIdentifierUnique(identifier);
             if (isUnique) {
                 $('#in-browser-test-modal-pointer-preview').css('background', '#41f4ca');
+                $('#in-browser-test-modal-pointer-preview-h1').css('background', '#41f4ca');
             } else {
                 $('#in-browser-test-modal-pointer-preview').css('background', '#f4bc42 ');
+                $('#in-browser-test-modal-pointer-preview-h1').css('background', '#f4bc42 ');
             }
         } else {
             $('#in-browser-test-modal-pointer-preview').css('background', 'white');
+            $('#in-browser-test-modal-pointer-preview-h1').css('background', 'white');
         }
     }
 
@@ -415,7 +418,7 @@
 
         function dragOnMouseDown(event) {
             let e = event || window.event;
-            if (e.target.id != 'in-browser-test-modal') {
+            if (e.target.id != 'in-browser-test-modal' && e.target.id != 'in-browser-test-modal-pointer-preview' && e.target.id != 'in-browser-test-modal-pointer-preview-h1') {
                 return;
             }
             e.preventDefault();

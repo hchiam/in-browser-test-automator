@@ -3,11 +3,11 @@ var savedSteps_init = '';
 let runButton = document.getElementById('start-button');
 
 chrome.storage.local.get('savedSteps', function getSettings(data) {
-	// TODO: clean up nulls and then update numberOfStepsCreated
-	let hasSteps = data.savedSteps && data.savedSteps.length > 0;
-	let hasValidSteps = data.savedSteps && data.savedSteps.find(s => s);
-	let hasLastStepFilled = data.savedSteps && data.savedSteps.slice().reverse().find(s => s && s.value !== '');
-	if (!hasSteps || !hasValidSteps) {
+	let savedSteps = cleanUpNullSteps(data.savedSteps);
+	let hasSteps = savedSteps.length > 0;
+	let lastStep = savedSteps[savedSteps.length-1];
+	let hasLastStepFilled = (lastStep.action && lastStep.action != 'hit-enter' && lastStep.value && lastStep.value !== '');
+	if (!hasSteps) {
 		numberOfStepsCreated_init = 'var numberOfStepsCreated = 1;';
 		savedSteps_init = `
 			var savedSteps = [
@@ -17,7 +17,6 @@ chrome.storage.local.get('savedSteps', function getSettings(data) {
 				}
 			];`
 	} else if (hasLastStepFilled) {
-		let savedSteps = cleanUpNullSteps(data.savedSteps);
 		savedSteps.push(
 			{
 				'action':'click',
@@ -27,7 +26,6 @@ chrome.storage.local.get('savedSteps', function getSettings(data) {
 		numberOfStepsCreated_init = `var numberOfStepsCreated = ${savedSteps.length};`;
 		savedSteps_init = `var savedSteps = ${JSON.stringify(savedSteps)};`;
 	} else {
-		let savedSteps = cleanUpNullSteps(data.savedSteps);
 		numberOfStepsCreated_init = `var numberOfStepsCreated = ${savedSteps.length};`;
 		savedSteps_init = `var savedSteps = ${JSON.stringify(savedSteps)};`;
 	}
@@ -45,5 +43,9 @@ runButton.addEventListener('click', function() {
 });
 
 function cleanUpNullSteps(steps) {
-	return steps.filter(s => s !== null);
+	if (steps && Array.isArray(steps)) {
+		return steps.filter(s => s !== null);
+	} else {
+		return [];
+	}
 }

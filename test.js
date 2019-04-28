@@ -271,7 +271,7 @@
     }
 
     function getIdentifier(event) {
-        let e = event.target;
+        let e = event.target || event;
         let tag = (e.tagName) ? e.tagName.trim().toLowerCase() : '';
         let id = (e.id) ? '#' + e.id.trim() : '';
         let classes = (e.className) ? '.' + e.className.trim().replace(/ /g,'.') : '';
@@ -280,7 +280,7 @@
     }
 
     function getParentIdentifier(event) {
-        let e = event.target.parentElement;
+        let e = event.parentElement || event.target.parentElement;
         let tag = (e.tagName) ? e.tagName.trim().toLowerCase() : '';
         let id = (e.id) ? '#' + e.id.trim() : '';
         let classes = (e.className) ? '.' + e.className.trim().replace(/ /g,'.') : '';
@@ -294,7 +294,7 @@
         return identifier;
     }
 
-    function autoFillClickIdentifier(event) {
+    function autoFillClickIdentifier(event) { // different from autoFillEnterIdentifier
         let e = event.target;
         let classes = (e.className) ? '.' + e.className.trim().replace(/ /g,'.') : '';
         let isInModal = classes.includes('in-browser-test-modal') || getIdentifierBeforeClicked().includes('in-browser-test-modal');
@@ -308,6 +308,7 @@
                 actionInput.value = identifier;
                 savedSteps[numberOfStepsCreated-1].value = identifier;
                 chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
+                currentElement = identifier;
             } else if (!isUnique) {
                 let parentIdentifier = getParentIdentifier(event);
                 let identifierWithParentPrepended = parentIdentifier + '>' + identifier;
@@ -321,11 +322,12 @@
                 actionInput.value = identifier;
                 savedSteps[numberOfStepsCreated-1].value = identifier;
                 chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
+                currentElement = identifier;
             }
             
             // prevent click from triggering button action (and prevent event propagation):
-            (event || window.event).preventDefault();
-            (event || window.event).stopPropagation();
+            (window.event || event).preventDefault();
+            (window.event || event).stopPropagation();
             return false;
         }
     }
@@ -344,15 +346,49 @@
         }
     }
 
+    function autoFillEnterIdentifier(event) { // different from autoFillClickIdentifier
+        let e = document.activeElement;
+        let classes = (e.className) ? '.' + e.className.trim().replace(/ /g,'.') : '';
+        let isInModal = classes.includes('in-browser-test-modal') || getIdentifierBeforeClicked().includes('in-browser-test-modal');
+        if (!isInModal) {
+            let identifier = getIdentifier(event); // not getIdentifierBeforeClicked();
+            let actionInput = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
+            let isUnique = isIdentifierUnique(identifier);
+            if (isUnique) {
+                // TODO: if changed, then add instead of edit step (useful to convert tab to click)
+                actionInput.value = identifier;
+                savedSteps[numberOfStepsCreated-1].value = identifier;
+                chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
+                currentElement = identifier;
+            } else if (!isUnique) {
+                let parentIdentifier = getParentIdentifier(event);
+                let identifierWithParentPrepended = parentIdentifier + '>' + identifier;
+                let doesPrependingParentHelp = isIdentifierUnique(identifierWithParentPrepended);
+                if (!doesPrependingParentHelp) {
+                    alert("Couldn't uniquely identify that element. \n\nTry a different part of the element? \nTry editing the identifier?");
+                    $(`#steps>div#step-${numberOfStepsCreated}>input`).focus();
+                }
+                // TODO: if changed, then add instead of edit step (useful to convert tab to click)
+                // show identifier either way
+                identifier = identifierWithParentPrepended;
+                actionInput.value = identifier;
+                savedSteps[numberOfStepsCreated-1].value = identifier;
+                chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
+                currentElement = identifier;
+            }
+        }
+    }
+
     function autoFillEnterValue(event) {
+        autoFillEnterIdentifier(document.activeElement); // different from autoFillClickIdentifier
         let keyCode = (event.keyCode || event.which);
-        let char = String.fromCharCode(keyCode);
         if (keyCode == 13) {
             console.log('hit-enter'); // TODO: use for issue #3
-        } else {
-            // TODO: use for issue #3
-            currentText = findElement(currentElement).value || findElement(currentElement).innerHTML;
         }
+        // TODO: use for issue #3
+        console.log(currentElement);
+        let element = findElement(currentElement);
+        let currentText = element ? (element.value || element.innerHTML) : '';
         console.log('currentText = ' + currentText); // TODO: use for issue #3
     }
 

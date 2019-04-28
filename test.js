@@ -92,13 +92,13 @@
         h1.id = 'in-browser-test-modal-pointer-preview-h1';
         h1.className = 'in-browser-test-modal';
         h1.innerHTML = 'Your pointer is hovering over: ';
-        h1.style.cssText = 'all:initial; font-family:avenir,arial,tahoma; font-weight:bold; color:grey; text-align:center; background:white; padding:0.5rem; border-radius:0.5rem; ';
+        h1.style.cssText = 'all:initial; font-family:avenir,arial,tahoma; font-weight:bold; color:grey; text-align:center; background:white; padding:0 0.5rem; border-radius:0.5rem; ';
         container.appendChild(h1);
         let div = document.createElement("div");
         div.id = 'in-browser-test-modal-pointer-preview';
         div.className = 'in-browser-test-modal';
         div.innerHTML = '-';
-        div.style.cssText = 'color:grey; background:white; text-align:center; min-height:3rem; border-radius:0.5rem; ';
+        div.style.cssText = 'color:grey; text-align:center; min-height:3rem; border-radius:0.5rem; padding:0.5rem; transition:0.5s; ';
         container.appendChild(div);
     }
 
@@ -343,6 +343,14 @@
         if (!isInModal) {
             let identifier = getIdentifier(event);
             document.getElementById('in-browser-test-modal-pointer-preview').innerHTML = identifier;
+            let isUnique = isIdentifierUnique(identifier);
+            if (isUnique) {
+                $('#in-browser-test-modal-pointer-preview').css('background', '#41f4ca');
+            } else {
+                $('#in-browser-test-modal-pointer-preview').css('background', '#f4bc42 ');
+            }
+        } else {
+            $('#in-browser-test-modal-pointer-preview').css('background', 'white');
         }
     }
 

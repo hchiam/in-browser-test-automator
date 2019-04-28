@@ -128,7 +128,7 @@
                 </select> : 
                 <input id="input-step-${stepNumber}" placeholder="(Right-click an element to get its identifier.)" 
                     class="in-browser-test-modal" 
-                    style="background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem; width:50%; text-overflow:ellipsis; font-family:avenir,arial,tahoma; font-size:16px; caret-color:red; "
+                    style="${savedStep.action=='hit-enter'?'display:none; ':''}background:white; border:1px solid grey; border-radius:0.5rem; padding-left:0.5rem; width:50%; text-overflow:ellipsis; font-family:avenir,arial,tahoma; font-size:16px; caret-color:red; "
                     value="${savedStep.value}">
                 <button id="remove-step-${stepNumber}" 
                     class="in-browser-test-modal"

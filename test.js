@@ -118,6 +118,8 @@
                         Select:</option>
                     <option value="enter" class="in-browser-test-modal" ${(savedStep.action=='enter') ? 'selected="selected"' : ''}>
                         Enter:</option>
+                    <option value="hit-enter" class="in-browser-test-modal" ${(savedStep.action=='hit-enter') ? 'selected="selected"' : ''}>
+                        Hit enter:</option>
                     <option value="check" class="in-browser-test-modal" ${(savedStep.action=='check') ? 'selected="selected"' : ''}>
                         Should show:</option>
                     ${''/* TODO: may need background script (for issue #5)
@@ -162,6 +164,13 @@
             } else {
                 $(selector).val('');
                 $(selector).attr('placeholder', '');
+            }
+            
+            if (action == 'hit-enter') {
+                $(selector).val('');
+                $(selector).hide();
+            } else {
+                $(selector).show();
             }
         });
 
@@ -435,6 +444,9 @@
                 } else if (action == 'enter') {
                     message += '\nStep ' + (i+1) + ': type in ' + currentElement + ': "' + value + '"';
                     findElement(currentElement).value = value;
+                } else if (action == 'hit-enter') {
+                    message += '\nStep ' + (i+1) + ': hit enter';
+                    $(currentElement).closest('form').submit();
                 } else if (action == 'check') {
                     let expectedValue = value;
                     let actualValue = findElement(currentElement).value || findElement(currentElement).innerHTML;
@@ -445,13 +457,14 @@
                         overallPassed = false;
                         return false;
                     }
+                }
                 // // TODO: may need background script (for issue #5)
                 // } else if (action == 'goto') {
                 //     message += '\nStep ' + (i+1) + ': go to URL ' + currentElement + ': "' + value + '"';
                 //     let url = value;
                 //     window.location.href = url;
                 //     alert('hi')
-                }
+                // }
                 
                 let finishedLastStep = (i === numberOfStepsToRun-1);
                 if (finishedLastStep) {

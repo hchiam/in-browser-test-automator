@@ -1,7 +1,7 @@
 {
   "name": "In-Browser Test Automator",
   "version": "1.0.0",
-  "description": "Set up and run quick UI tests, while staying in your browser.",
+  "description": "An in-browser test automator.",
   "permissions": [
     "tabs",
     "activeTab",

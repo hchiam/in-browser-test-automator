@@ -1,6 +1,6 @@
 {
   "name": "In-Browser Test Automator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An in-browser test automator.",
   "permissions": [
     "tabs",

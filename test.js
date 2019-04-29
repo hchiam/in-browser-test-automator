@@ -347,9 +347,11 @@
             if (isUnique) {
                 $('#in-browser-test-modal-pointer-preview').css('background', '#41f4ca');
                 $('#in-browser-test-modal-pointer-preview-h1').css('background', '#41f4ca');
+                $('#in-browser-test-modal-pointer-preview-h1').text('Your pointer is hovering over:');
             } else {
                 $('#in-browser-test-modal-pointer-preview').css('background', '#f4bc42 ');
                 $('#in-browser-test-modal-pointer-preview-h1').css('background', '#f4bc42 ');
+                $('#in-browser-test-modal-pointer-preview-h1').text('Your pointer is hovering over: (Not unique!)');
             }
         } else {
             $('#in-browser-test-modal-pointer-preview').css('background', 'white');

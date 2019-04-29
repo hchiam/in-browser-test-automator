@@ -15,6 +15,12 @@
     let onHoverStyle = baseStyle + 'background:rgba(0,100,255,1); ';
     let offHoverStyle = baseStyle + 'background:rgba(0,100,255,0.5); ';
     
+    alert(`INSTRUCTIONS:
+        Click = left/right click on something
+        Enter = type something
+        Check = (manually +add a step and select "Should show:")
+    `);
+
     removeModal(); // reset
     createModal();
 
@@ -474,7 +480,7 @@
                         message += ' FAILED: could not find ' + currentElement;
                         overallPassed = false;
                     }
-                } else if (action == 'select') {
+                } else if (action == 'select' && value !== '') {
                     currentElement = value;
                     message += '\nStep ' + (i+1);
                     if (findElement(currentElement)) {

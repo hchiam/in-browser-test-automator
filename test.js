@@ -301,7 +301,7 @@
         if (!isInModal) {
             let identifier = getIdentifierBeforeClicked(); // not getIdentifier(event);
             let selectedAction = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>select`);
-            let shouldUseValue = (selectedAction.value == 'click') || (selectedAction.value == 'select');
+            let shouldUseValue = selectedAction && ((selectedAction.value == 'click') || (selectedAction.value == 'select'));
             let actionInput = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
             let isUnique = isIdentifierUnique(identifier);
             if (shouldUseValue && actionInput && isUnique) {
@@ -469,6 +469,9 @@
         let numberOfStepsToRun = $("#steps").find('select').length;
         $('#steps').find('select').each(function (i) {
             if (!overallPassed) {
+                message += '\n\nOverall status: ';
+                message += overallPassed ? 'PASSED' : 'FAILED';
+                alert(message)
                 return;
             }
             let self = this; // so self inside setTimeout points to the right "this"
@@ -484,7 +487,6 @@
                     } else {
                         message += ' FAILED: could not find ' + currentElement;
                         overallPassed = false;
-                        return false;
                     }
                 } else if (action == 'select') {
                     currentElement = value;
@@ -495,7 +497,6 @@
                     } else {
                         message += ' FAILED: could not find ' + currentElement;
                         overallPassed = false;
-                        return false;
                     }
                 } else if (action == 'enter') {
                     message += '\nStep ' + (i+1) + ': type in ' + currentElement + ': "' + value + '"';
@@ -511,7 +512,6 @@
                     message += equals ? ('PASSED: "' + actualValue + '" is "' + expectedValue + '"') : ('FAILED: "' + actualValue + '" is NOT "' + expectedValue + '"');
                     if (!equals) {
                         overallPassed = false;
-                        return false;
                     }
                 }
                 // // TODO: may need background script (for issue #5)

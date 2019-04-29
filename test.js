@@ -295,7 +295,7 @@
         return identifier;
     }
 
-    function autoFillClickIdentifier(event) { // different from autoFillEnterIdentifier
+    function autoFillClickIdentifier(event) {
         let e = event.target;
         let classes = (e.className) ? '.' + e.className.trim().replace(/ /g,'.') : '';
         let isInModal = classes.includes('in-browser-test-modal') || getIdentifierBeforeClicked().includes('in-browser-test-modal');

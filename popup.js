@@ -6,7 +6,6 @@ chrome.storage.local.get('savedSteps', function getSettings(data) {
 	let savedSteps = cleanUpNullSteps(data.savedSteps);
 	let hasSteps = savedSteps.length > 0;
 	let lastStep = savedSteps[savedSteps.length-1];
-	let hasLastStepFilled = (lastStep.action && lastStep.action != 'hit-enter' && lastStep.value && lastStep.value !== '');
 	if (!hasSteps) {
 		numberOfStepsCreated_init = 'var numberOfStepsCreated = 1;';
 		savedSteps_init = `
@@ -16,15 +15,6 @@ chrome.storage.local.get('savedSteps', function getSettings(data) {
 					'value':''
 				}
 			];`
-	} else if (hasLastStepFilled) {
-		savedSteps.push(
-			{
-				'action':'click',
-				'value':''
-			}
-		);
-		numberOfStepsCreated_init = `var numberOfStepsCreated = ${savedSteps.length};`;
-		savedSteps_init = `var savedSteps = ${JSON.stringify(savedSteps)};`;
 	} else {
 		numberOfStepsCreated_init = `var numberOfStepsCreated = ${savedSteps.length};`;
 		savedSteps_init = `var savedSteps = ${JSON.stringify(savedSteps)};`;

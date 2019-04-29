@@ -142,6 +142,7 @@
             savedSteps[step-1] = null;
             chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
             $("#step-" + step).remove();
+            numberOfStepsCreated--;
         })
 
         $(`#steps>div#step-${(stepNumber)}>select`).change(function changeAction(event) {
@@ -301,10 +302,15 @@
         if (!isInModal) {
             let identifier = getIdentifierBeforeClicked(); // not getIdentifier(event);
             let selectedAction = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>select`);
-            let shouldUseValue = selectedAction && ((selectedAction.value == 'click') || (selectedAction.value == 'select'));
             let actionInput = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
+            let shouldAddStep = (numberOfStepsCreated === 0) || (actionInput && actionInput.value !== '') || (selectedAction && (selectedAction.value != 'click') && (selectedAction.value != 'select'));
             let isUnique = isIdentifierUnique(identifier);
-            if (shouldUseValue && actionInput && isUnique) {
+            if (isUnique) {
+                if (shouldAddStep) {
+                    addStep();
+                    // reset actionInput for new entry (numberOfStepsCreated)
+                    actionInput = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
+                }
                 actionInput.value = identifier;
                 savedSteps[numberOfStepsCreated-1].value = identifier;
                 chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
@@ -319,6 +325,11 @@
                 }
                 // show identifier either way
                 identifier = identifierWithParentPrepended;
+                if (shouldAddStep) {
+                    addStep();
+                    // reset actionInput for new entry (numberOfStepsCreated)
+                    actionInput = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
+                }
                 actionInput.value = identifier;
                 savedSteps[numberOfStepsCreated-1].value = identifier;
                 chrome.storage.local.set({'savedSteps': savedSteps}, function() {});

@@ -245,6 +245,7 @@
         button.innerHTML = '&#9658; Run the following steps:';
         button.style.cssText = 'all:initial; background:rgba(0,100,255,0.5); padding:0.25rem; margin:0.25rem; display:inline; border-radius:5px; font-family:avenir,arial,tahoma; ';
         button.onclick = function() {
+            cleanUpNullSteps();
             runSteps();
         };
         button.onmouseover = function() {
@@ -438,6 +439,17 @@
             element.style.top = (element.offsetTop + yChange) + "px";
         }
     }
+
+    function cleanUpNullSteps() {
+        chrome.storage.local.get('savedSteps', function getSettings(data) {
+            if (data.savedSteps && Array.isArray(data.savedSteps)) {
+                savedSteps = data.savedSteps.filter(s => s !== null);
+            } else {
+                savedSteps = [];
+            }
+            chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
+        });
+    }    
 
     function runSteps() {
         document.removeEventListener('click', autoFillClickIdentifier, false);

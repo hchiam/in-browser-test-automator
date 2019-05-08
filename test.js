@@ -469,6 +469,7 @@
                     if (currentElementObject.length > 0) {
                         message += ': click on ' + currentElement;
                         currentElementObject.click();
+                        currentElementObject.trigger('click');
                     } else {
                         message += ' FAILED: could not find ' + currentElement;
                         overallPassed = false;
@@ -480,29 +481,50 @@
                     if (currentElementObject.length > 0) {
                         message += ': click on ' + currentElement;
                         currentElementObject.select();
+                        currentElementObject.trigger('select');
                     } else {
                         message += ' FAILED: could not find ' + currentElement;
                         overallPassed = false;
                     }
                 } else if (action == 'enter') {
-                    message += '\nStep ' + (i+1) + ': type in ' + currentElement + ': "' + value + '"';
-                    $(currentElement).val(value);
+                    message += '\nStep ' + (i+1);
+                    let currentElementObject = $(currentElement);
+                    if (currentElementObject.length > 0) {
+                        message += ': type in ' + currentElement + ': "' + value + '"';
+                        currentElementObject.val(value);
+                    } else {
+                        message += ' FAILED: could not find ' + currentElement;
+                        overallPassed = false;
+                    }
                 } else if (action == 'hit-enter') {
-                    message += '\nStep ' + (i+1) + ': hit enter';
-                    $(currentElement).closest('form').submit();
+                    message += '\nStep ' + (i+1);
+                    let currentElementObject = $(currentElement);
+                    if (currentElementObject.length > 0) {
+                        message += ': hit enter';
+                        currentElementObject.submit();
+                        
+                        var e = $.Event( "keypress", { keyCode: 13 } );
+                        currentElementObject.trigger(e);
+
+                        currentElementObject.closest('form').submit();
+                    } else {
+                        message += ' FAILED: could not find ' + currentElement;
+                        overallPassed = false;
+                    }
                 } else if (action == 'check') {
+                    message += '\nStep ' + (i+1) + ' ';
                     let currentElementObject = $(currentElement);
                     if (currentElementObject.length === 0) {
-                        message += '\nStep ' + (i+1) + ' ';
                         message += 'FAILED: could not find ' + currentElement;
                         overallPassed = false;
                     } else {
                         let expectedValue = value;
                         let actualValue = currentElementObject.val() || currentElementObject.text();
                         let equals = (actualValue === expectedValue);
-                        message += '\nStep ' + (i+1) + ' ';
-                        message += equals ? ('PASSED: "' + actualValue + '" is "' + expectedValue + '"') : ('FAILED: "' + actualValue + '" is NOT "' + expectedValue + '"');
-                        if (!equals) {
+                        if (equals) {
+                            message += 'PASSED: "' + actualValue + '" is "' + expectedValue + '"';
+                        } else {
+                            message += 'FAILED: "' + actualValue + '" is NOT "' + expectedValue + '"';
                             overallPassed = false;
                         }
                     }

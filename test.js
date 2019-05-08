@@ -274,7 +274,7 @@
     }
 
     function isIdentifierUnique(identifier) {
-        return (typeof document.querySelectorAll(identifier)[1]) === 'undefined'; // index 1 should not exist
+        return ($(identifier).length === 1);
     }
 
     function getIdentifier(event) {
@@ -307,8 +307,8 @@
         let isInModal = classes.includes('in-browser-test-modal') || getIdentifierBeforeClicked().includes('in-browser-test-modal');
         if (!isInModal) {
             let identifier = getIdentifierBeforeClicked(); // not getIdentifier(event);
-            let selectedAction = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>select`);
-            let actionInput = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
+            let selectedAction = $(`#steps>div#step-${numberOfStepsCreated}>select`);
+            let actionInput = $(`#steps>div#step-${numberOfStepsCreated}>input`);
             let isUnique = isIdentifierUnique(identifier);
             if (!isUnique) {
                 let parentIdentifier = getParentIdentifier(event);
@@ -321,14 +321,14 @@
                 identifier = identifierWithParentPrepended;
             }
 
-            let shouldAddStep = (numberOfStepsCreated === 0) || (actionInput && actionInput.value !== '') || (selectedAction && (selectedAction.value != 'click') && (selectedAction.value != 'select'));
+            let shouldAddStep = (numberOfStepsCreated === 0) || (actionInput && actionInput.val() !== '') || (selectedAction && (selectedAction.val() != 'click') && (selectedAction.val() != 'select'));
             if (shouldAddStep) {
                 addStep();
                 // reset actionInput for new entry (numberOfStepsCreated)
-                actionInput = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
+                actionInput = $(`#steps>div#step-${numberOfStepsCreated}>input`);
             }
 
-            actionInput.value = identifier;
+            actionInput.val(identifier);
             savedSteps[numberOfStepsCreated-1].value = identifier;
             chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
             currentElement = identifier;
@@ -372,26 +372,26 @@
         let classes = (e.className) ? '.' + e.className.trim().replace(/ /g,'.') : '';
         let isInModal = classes.includes('in-browser-test-modal') || getIdentifierBeforeClicked().includes('in-browser-test-modal');
         if (!isInModal) {
-            let selectedAction = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>select`);
-            let actionInput = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
-            let shouldAddStep = (numberOfStepsCreated === 0) || (selectedAction && (selectedAction.value != 'enter') && (selectedAction.value != 'enter-hit'));
+            let selectedAction = $(`#steps>div#step-${numberOfStepsCreated}>select`);
+            let actionInput = $(`#steps>div#step-${numberOfStepsCreated}>input`);
+            let shouldAddStep = (numberOfStepsCreated === 0) || (selectedAction && (selectedAction.val() != 'enter') && (selectedAction.val() != 'enter-hit'));
             let keyCode = (event.keyCode || event.which);
             if (keyCode == 13) {
                 if (shouldAddStep) {
                     addStep('hit-enter');
                     // reset actionInput for new entry (numberOfStepsCreated)
-                    actionInput = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
+                    actionInput = $(`#steps>div#step-${numberOfStepsCreated}>input`);
                 }
             } else {
                 if (shouldAddStep) {
                     addStep('enter');
                     // reset actionInput for new entry (numberOfStepsCreated)
-                    actionInput = document.querySelector(`#steps>div#step-${numberOfStepsCreated}>input`);
+                    actionInput = $(`#steps>div#step-${numberOfStepsCreated}>input`);
                 }
             }
-            let element = findElement(currentElement);
-            let currentText = element ? (element.value || element.innerHTML) : '';
-            actionInput.value = currentText;
+            let element = $(currentElement);
+            let currentText = (element.val() || element.text() || '');
+            actionInput.val(currentText);
             savedSteps[numberOfStepsCreated-1].value = currentText;
             chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
         }
@@ -439,14 +439,6 @@
         }
     }
 
-    function findElement(elementSelector) {
-        try {
-            return document.querySelector(elementSelector);
-        } catch {
-            return null;
-        }
-    }
-
     function runSteps() {
         document.removeEventListener('click', autoFillClickIdentifier, false);
         document.removeEventListener('contextmenu', autoFillClickIdentifier, false);
@@ -473,9 +465,10 @@
                 if (action == 'click' && value !== '') {
                     currentElement = value;
                     message += '\nStep ' + (i+1);
-                    if (findElement(currentElement)) {
+                    let currentElementObject = $(currentElement);
+                    if (currentElementObject.length > 0) {
                         message += ': click on ' + currentElement;
-                        findElement(currentElement).click();
+                        currentElementObject.click();
                     } else {
                         message += ' FAILED: could not find ' + currentElement;
                         overallPassed = false;
@@ -483,27 +476,35 @@
                 } else if (action == 'select' && value !== '') {
                     currentElement = value;
                     message += '\nStep ' + (i+1);
-                    if (findElement(currentElement)) {
+                    let currentElementObject = $(currentElement);
+                    if (currentElementObject.length > 0) {
                         message += ': click on ' + currentElement;
-                        findElement(currentElement).trigger("select");
+                        currentElementObject.select();
                     } else {
                         message += ' FAILED: could not find ' + currentElement;
                         overallPassed = false;
                     }
                 } else if (action == 'enter') {
                     message += '\nStep ' + (i+1) + ': type in ' + currentElement + ': "' + value + '"';
-                    findElement(currentElement).value = value;
+                    $(currentElement).val(value);
                 } else if (action == 'hit-enter') {
                     message += '\nStep ' + (i+1) + ': hit enter';
                     $(currentElement).closest('form').submit();
                 } else if (action == 'check') {
-                    let expectedValue = value;
-                    let actualValue = findElement(currentElement).value || findElement(currentElement).innerHTML;
-                    let equals = (actualValue === expectedValue);
-                    message += '\nStep ' + (i+1) + ' ';
-                    message += equals ? ('PASSED: "' + actualValue + '" is "' + expectedValue + '"') : ('FAILED: "' + actualValue + '" is NOT "' + expectedValue + '"');
-                    if (!equals) {
+                    let currentElementObject = $(currentElement);
+                    if (currentElementObject.length === 0) {
+                        message += '\nStep ' + (i+1) + ' ';
+                        message += 'FAILED: could not find ' + currentElement;
                         overallPassed = false;
+                    } else {
+                        let expectedValue = value;
+                        let actualValue = currentElementObject.val() || currentElementObject.text();
+                        let equals = (actualValue === expectedValue);
+                        message += '\nStep ' + (i+1) + ' ';
+                        message += equals ? ('PASSED: "' + actualValue + '" is "' + expectedValue + '"') : ('FAILED: "' + actualValue + '" is NOT "' + expectedValue + '"');
+                        if (!equals) {
+                            overallPassed = false;
+                        }
                     }
                 }
                 // // TODO: may need background script (for issue #5)

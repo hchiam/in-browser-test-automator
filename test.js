@@ -449,7 +449,7 @@
             }
             chrome.storage.local.set({'savedSteps': savedSteps}, function() {});
         });
-    }    
+    }
 
     function runSteps() {
         document.removeEventListener('click', autoFillClickIdentifier, false);
@@ -502,8 +502,9 @@
                     message += '\nStep ' + (i+1);
                     let currentElementObject = $(currentElement);
                     if (currentElementObject.length > 0) {
-                        message += ': type in ' + currentElement + ': "' + value + '"';
+                        message += ': type "' + value + '" in ' + currentElement;
                         currentElementObject.val(value);
+                        currentElementObject.trigger('change');
                     } else {
                         message += ' FAILED: could not find ' + currentElement;
                         overallPassed = false;

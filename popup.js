@@ -1,5 +1,5 @@
-var numberOfStepsCreated_init = 1;
-var savedSteps_init = "";
+let numberOfStepsCreated_init = 1;
+let savedSteps_init = "";
 let runButton = document.getElementById("start-button");
 
 chrome.storage.local.get("savedSteps", function getSettings(data) {
@@ -7,17 +7,17 @@ chrome.storage.local.get("savedSteps", function getSettings(data) {
   let hasSteps = savedSteps.length > 0;
   let lastStep = savedSteps[savedSteps.length - 1];
   if (!hasSteps) {
-    numberOfStepsCreated_init = "var numberOfStepsCreated = 1;";
+    numberOfStepsCreated_init = "let numberOfStepsCreated = 1;";
     savedSteps_init = `
-  var savedSteps = [
+  let savedSteps = [
     {
       'action':'click',
       'value':''
     }
   ];`;
   } else {
-    numberOfStepsCreated_init = `var numberOfStepsCreated = ${savedSteps.length};`;
-    savedSteps_init = `var savedSteps = ${JSON.stringify(savedSteps)};`;
+    numberOfStepsCreated_init = `let numberOfStepsCreated = ${savedSteps.length};`;
+    savedSteps_init = `let savedSteps = ${JSON.stringify(savedSteps)};`;
   }
 });
 

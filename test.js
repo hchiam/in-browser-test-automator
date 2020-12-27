@@ -634,7 +634,7 @@ Check = (manually +add a step and select "Should show:")
               message += ": hit enter";
               currentElementObject.submit();
 
-              var e = $.Event("keypress", { keyCode: 13 });
+              const e = $.Event("keypress", { keyCode: 13 });
               currentElementObject.trigger(e);
 
               currentElementObject.closest("form").submit();

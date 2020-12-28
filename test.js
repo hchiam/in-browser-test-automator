@@ -414,7 +414,7 @@ Check = (manually +add a step and select "Should show:")
       actionInput.val(identifier);
       savedSteps[numberOfStepsCreated - 1].value = identifier;
       chrome.storage.local.set({ savedSteps: savedSteps }, function () {});
-      currentElement = identifier;
+      currentElement = identifier + ":visible";
 
       // prevent click from triggering button action (and prevent event propagation):
       (window.event || event).preventDefault();
@@ -593,7 +593,7 @@ Check = (manually +add a step and select "Should show:")
           let action = self.value;
           let value = $(`#steps>div:nth-child(${i + 1})>input`).val();
           if (action == "click" && value !== "") {
-            currentElement = value;
+            currentElement = value + ":visible";
             message += "\nStep " + (i + 1);
             let currentElementObject = $(currentElement);
             if (currentElementObject.length > 0) {
@@ -605,7 +605,7 @@ Check = (manually +add a step and select "Should show:")
               overallPassed = false;
             }
           } else if (action == "select" && value !== "") {
-            currentElement = value;
+            currentElement = value + ":visible";
             message += "\nStep " + (i + 1);
             let currentElementObject = $(currentElement);
             if (currentElementObject.length > 0) {

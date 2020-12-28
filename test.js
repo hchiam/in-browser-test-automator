@@ -171,7 +171,7 @@ Check = (manually +add a step and select "Should show:")
         title="Remove step"
         style="all:initial; background:lightgrey; width:2rem; height:2rem; border-radius:1rem; text-align:center;font-family:avenir,arial,tahoma; ">-</button>
 </div>
-`);
+    `);
 
     $("#remove-step-" + stepNumber).click(function useSettings(event) {
       let step = event.target.id.replace(/^remove-step-/, "");

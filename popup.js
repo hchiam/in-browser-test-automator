@@ -5,7 +5,6 @@ let runButton = document.getElementById("start-button");
 chrome.storage.local.get("savedSteps", function getSettings(data) {
   let savedSteps = cleanUpNullSteps(data.savedSteps);
   let hasSteps = savedSteps.length > 0;
-  let lastStep = savedSteps[savedSteps.length - 1];
   if (!hasSteps) {
     numberOfStepsCreated_init = "var numberOfStepsCreated = 1;";
     savedSteps_init = `

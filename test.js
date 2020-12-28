@@ -348,7 +348,8 @@ Check = (manually +add a step and select "Should show:")
     let classes = e.className
       ? "." + e.className.trim().replace(/ /g, ".")
       : "";
-    let identifier = tag + id + classes;
+    let text = e.text ? `:contains('${e.text}')` : "";
+    let identifier = tag + id + classes + text;
     return identifier;
   }
 

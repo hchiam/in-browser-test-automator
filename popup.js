@@ -7,13 +7,12 @@ chrome.storage.local.get("savedSteps", function getSettings(data) {
   let hasSteps = savedSteps.length > 0;
   if (!hasSteps) {
     numberOfStepsCreated_init = "var numberOfStepsCreated = 1;";
-    savedSteps_init = `
-  var savedSteps = [
-    {
-      'action':'click',
-      'value':''
-    }
-  ];`;
+    savedSteps_init = `var savedSteps = [
+      {
+        'action':'click',
+        'value':''
+      }
+    ];`;
   } else {
     numberOfStepsCreated_init = `var numberOfStepsCreated = ${savedSteps.length};`;
     savedSteps_init = `var savedSteps = ${JSON.stringify(savedSteps)};`;
